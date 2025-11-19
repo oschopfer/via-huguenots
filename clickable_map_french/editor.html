@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Éditeur de carte Via Huguenots</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        header {
+            background: #0b611a;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .instructions {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .main-layout {
+            display: flex;
+            height: calc(100vh - 200px);
+        }
+
+        .map-container {
+            flex: 1;
+            position: relative;
+            overflow: auto;
+            background: #eee;
+            border-right: 2px solid #ddd;
+        }
+
+        #map {
+            position: relative;
+            display: inline-block;
+            cursor: crosshair;
+        }
+
+        #mapImage {
+            display: block;
+            max-width: none;
+        }
+
+        .marker {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #ff6b6b;
+            border: 3px solid white;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            cursor: move;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+
+        .marker:hover {
+            background: #ff5252;
+            transform: translate(-50%, -50%) scale(1.2);
+            z-index: 20;
+        }
+
+        .marker.selected {
+            background: #4CAF50;
+            transform: translate(-50%, -50%) scale(1.3);
+            z-index: 30;
+        }
+
+        .marker-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            pointer-events: none;
+        }
+
+        .sidebar {
+            width: 400px;
+            background: #fafafa;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .controls {
+            padding: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #0b611a;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #094d15;
+        }
+
+        .btn-secondary {
+            background: #5d9ace;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4a7fb0;
+        }
+
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+
+        .btn-success {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #45a049;
+        }
+
+        .editor {
+            padding: 20px;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        input[type="number"] {
+            width: 100%;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .coords-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-left: 4px solid #2196F3;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ffc107;
+        }
+
+        .stage-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        .stage-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .stage-item:hover {
+            background: #f0f0f0;
+        }
+
+        .stage-item.selected {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .stage-item:last-child {
+            border-bottom: none;
+        }
+
+        #jsonInput {
+            display: none;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🗺️ Éditeur de carte Via Huguenots</h1>
+            <div class="instructions">
+                <strong>Instructions:</strong> Cliquez sur un marqueur pour le sélectionner, puis déplacez-le en cliquant sur la carte.
+                Vous pouvez aussi modifier les coordonnées manuellement dans le panneau de droite.
+            </div>
+        </header>
+
+        <div class="main-layout">
+            <div class="map-container">
+                <div id="map">
+                    <img id="mapImage" src="" alt="Carte">
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="controls">
+                    <div class="btn-group">
+                        <button class="btn-primary" onclick="loadData()">📂 Charger JSON</button>
+                        <button class="btn-success" onclick="exportData()">💾 Télécharger JSON</button>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn-secondary" onclick="addStage()">➕ Ajouter étape</button>
+                        <button class="btn-danger" onclick="deleteStage()" id="deleteBtn" disabled>🗑️ Supprimer</button>
+                    </div>
+                    <input type="file" id="jsonInput" accept=".json" onchange="handleFileSelect(event)">
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)" style="display:none">
+                    <button class="btn-secondary" onclick="document.getElementById('imageInput').click()" style="width: 100%;">🖼️ Charger image</button>
+                </div>
+
+                <div class="editor" id="editor">
+                    <div class="info-box">
+                        👈 Sélectionnez une étape dans la liste ou cliquez sur un marqueur sur la carte
+                    </div>
+
+                    <div class="stage-list" id="stageList"></div>
+
+                    <div id="editForm" class="hidden">
+                        <h3 style="margin-bottom: 15px;">Édition de l'étape</h3>
+
+                        <div class="form-group">
+                            <label>Numéro d'étape</label>
+                            <input type="number" id="stageNum" min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom court</label>
+                            <input type="text" id="nameShort">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom complet (Français)</label>
+                            <input type="text" id="nameFullFr">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Nom complet (Allemand)</label>
+                            <input type="text" id="nameFullDe">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Distance</label>
+                            <input type="text" id="distance" placeholder="ex: 27.5 km">
+                        </div>
+
+                        <div class="form-group">
+                            <label>URL (Français)</label>
+                            <textarea id="urlFr" rows="2"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>URL (Allemand)</label>
+                            <textarea id="urlDe" rows="2"></textarea>
+                        </div>
+
+                        <div class="warning-box">
+                            <strong>Coordonnées GPS</strong><br>
+                            Attention: modifications manuelles seulement
+                        </div>
+
+                        <div class="coords-group">
+                            <div class="form-group">
+                                <label>Latitude</label>
+                                <input type="number" id="latitude" step="0.000001">
+                            </div>
+                            <div class="form-group">
+                                <label>Longitude</label>
+                                <input type="number" id="longitude" step="0.000001">
+                            </div>
+                        </div>
+
+                        <div class="info-box">
+                            <strong>Coordonnées pixel sur la carte</strong><br>
+                            Cliquez sur la carte pour repositionner
+                        </div>
+
+                        <div class="coords-group">
+                            <div class="form-group">
+                                <label>X (pixel)</label>
+                                <input type="number" id="pixelX" min="0">
+                            </div>
+                            <div class="form-group">
+                                <label>Y (pixel)</label>
+                                <input type="number" id="pixelY" min="0">
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" onclick="saveCurrentStage()" style="width: 100%; margin-top: 15px;">
+                            💾 Enregistrer les modifications
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let stages = [];
+        let selectedStageIndex = null;
+        let isRepositioning = false;
+        let mapImage = null;
+
+        // Charger l'image par défaut au démarrage
+        window.onload = function() {
+            mapImage = document.getElementById('mapImage');
+            mapImage.src = 'map_chemin_layer.jpg';
+
+            // Auto-charger le JSON au démarrage
+            fetch('via_huguenots_merged.json')
+                .then(response => response.json())
+                .then(data => {
+                    stages = data;
+                    renderStageList();
+                    renderMarkers();
+                })
+                .catch(err => console.log('Fichier JSON non trouvé, utilisez "Charger JSON"'));
+        };
+
+        function loadData() {
+            document.getElementById('jsonInput').click();
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    stages = JSON.parse(e.target.result);
+                    renderStageList();
+                    renderMarkers();
+                    alert('✅ Données chargées avec succès!');
+                } catch (err) {
+                    alert('❌ Erreur lors de la lecture du fichier JSON');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                mapImage.src = e.target.result;
+                renderMarkers();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderStageList() {
+            const list = document.getElementById('stageList');
+            list.innerHTML = '';
+
+            stages.forEach((stage, index) => {
+                const item = document.createElement('div');
+                item.className = 'stage-item';
+                if (index === selectedStageIndex) {
+                    item.classList.add('selected');
+                }
+                item.textContent = `${stage.stage}. ${stage.name_full_fr || stage.name_short}`;
+                item.onclick = () => selectStage(index);
+                list.appendChild(item);
+            });
+        }
+
+        function renderMarkers() {
+            // Supprimer les anciens marqueurs
+            const oldMarkers = document.querySelectorAll('.marker');
+            oldMarkers.forEach(m => m.remove());
+
+            // Créer les nouveaux marqueurs
+            stages.forEach((stage, index) => {
+                const marker = document.createElement('div');
+                marker.className = 'marker';
+                if (index === selectedStageIndex) {
+                    marker.classList.add('selected');
+                }
+                marker.style.left = stage.x + 'px';
+                marker.style.top = stage.y + 'px';
+
+                const label = document.createElement('div');
+                label.className = 'marker-label';
+                label.textContent = stage.stage;
+                marker.appendChild(label);
+
+                marker.onclick = (e) => {
+                    e.stopPropagation();
+                    selectStage(index);
+                };
+
+                document.getElementById('map').appendChild(marker);
+            });
+        }
+
+        function selectStage(index) {
+            selectedStageIndex = index;
+            const stage = stages[index];
+
+            // Mettre à jour la liste
+            renderStageList();
+            renderMarkers();
+
+            // Remplir le formulaire
+            document.getElementById('editForm').classList.remove('hidden');
+            document.getElementById('stageNum').value = stage.stage;
+            document.getElementById('nameShort').value = stage.name_short;
+            document.getElementById('nameFullFr').value = stage.name_full_fr || '';
+            document.getElementById('nameFullDe').value = stage.name_full_de || '';
+            document.getElementById('distance').value = stage.distance || '';
+            document.getElementById('urlFr').value = stage.url_fr || '';
+            document.getElementById('urlDe').value = stage.url_de || '';
+            document.getElementById('latitude').value = stage.latitude;
+            document.getElementById('longitude').value = stage.longitude;
+            document.getElementById('pixelX').value = stage.x;
+            document.getElementById('pixelY').value = stage.y;
+
+            document.getElementById('deleteBtn').disabled = false;
+
+            // Activer le mode repositionnement
+            isRepositioning = true;
+        }
+
+        function saveCurrentStage() {
+            if (selectedStageIndex === null) return;
+
+            const stage = stages[selectedStageIndex];
+            stage.stage = parseInt(document.getElementById('stageNum').value);
+            stage.name_short = document.getElementById('nameShort').value;
+            stage.name_full_fr = document.getElementById('nameFullFr').value;
+            stage.name_full_de = document.getElementById('nameFullDe').value;
+            stage.distance = document.getElementById('distance').value;
+            stage.url_fr = document.getElementById('urlFr').value;
+            stage.url_de = document.getElementById('urlDe').value;
+            stage.latitude = parseFloat(document.getElementById('latitude').value);
+            stage.longitude = parseFloat(document.getElementById('longitude').value);
+            stage.x = parseInt(document.getElementById('pixelX').value);
+            stage.y = parseInt(document.getElementById('pixelY').value);
+
+            renderStageList();
+            renderMarkers();
+
+            alert('✅ Modifications enregistrées!');
+        }
+
+        function addStage() {
+            const newStage = {
+                stage: stages.length + 1,
+                name_short: "nouvelle_etape",
+                latitude: 46.5,
+                longitude: 6.5,
+                x: 100,
+                y: 100,
+                distance: "",
+                name_full_fr: "Nouvelle étape",
+                url_fr: "",
+                name_full_de: "Neue Etappe",
+                url_de: ""
+            };
+
+            stages.push(newStage);
+            renderStageList();
+            renderMarkers();
+            selectStage(stages.length - 1);
+        }
+
+        function deleteStage() {
+            if (selectedStageIndex === null) return;
+
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette étape?')) {
+                stages.splice(selectedStageIndex, 1);
+                selectedStageIndex = null;
+                document.getElementById('editForm').classList.add('hidden');
+                document.getElementById('deleteBtn').disabled = true;
+                renderStageList();
+                renderMarkers();
+                isRepositioning = false;
+            }
+        }
+
+        function exportData() {
+            const dataStr = JSON.stringify(stages, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'via_huguenots_merged_edited.json';
+            link.click();
+            URL.revokeObjectURL(url);
+
+            alert('✅ Fichier JSON téléchargé!');
+        }
+
+        // Clic sur la carte pour repositionner
+        document.getElementById('map').addEventListener('click', function(e) {
+            if (!isRepositioning || selectedStageIndex === null) return;
+
+            const rect = mapImage.getBoundingClientRect();
+            const x = e.clientX - rect.left + this.parentElement.scrollLeft;
+            const y = e.clientY - rect.top + this.parentElement.scrollTop;
+
+            stages[selectedStageIndex].x = Math.round(x);
+            stages[selectedStageIndex].y = Math.round(y);
+
+            document.getElementById('pixelX').value = Math.round(x);
+            document.getElementById('pixelY').value = Math.round(y);
+
+            renderMarkers();
+        });
+
+        // Synchroniser les champs de coordonnées pixel avec les changements manuels
+        document.getElementById('pixelX').addEventListener('change', function() {
+            if (selectedStageIndex !== null) {
+                stages[selectedStageIndex].x = parseInt(this.value);
+                renderMarkers();
+            }
+        });
+
+        document.getElementById('pixelY').addEventListener('change', function() {
+            if (selectedStageIndex !== null) {
+                stages[selectedStageIndex].y = parseInt(this.value);
+                renderMarkers();
+            }
+        });
+    </script>
+</body>
+</html>
