@@ -1,0 +1,226 @@
+[
+  {
+    "stage": 1,
+    "name": "chancygeneveplain",
+    "latitude": 46.130329087376595,
+    "longitude": 5.964801048627123,
+    "x": 48,
+    "y": 689
+  },
+  {
+    "stage": 2,
+    "name": "geneveplainpalaisversoix",
+    "latitude": 46.198167082387954,
+    "longitude": 6.143019047332928,
+    "x": 101,
+    "y": 659
+  },
+  {
+    "stage": 3,
+    "name": "versoixnyon",
+    "latitude": 46.27983708400279,
+    "longitude": 6.165978052187711,
+    "x": 108,
+    "y": 624
+  },
+  {
+    "stage": 4,
+    "name": "nyonrolle",
+    "latitude": 46.38448147615418,
+    "longitude": 6.236416768282652,
+    "x": 129,
+    "y": 578
+  },
+  {
+    "stage": 5,
+    "name": "rollemorges",
+    "latitude": 46.46280612726696,
+    "longitude": 6.336842412594706,
+    "x": 158,
+    "y": 544
+  },
+  {
+    "stage": 6,
+    "name": "morgescossonay",
+    "latitude": 46.51085947663523,
+    "longitude": 6.4935456761159,
+    "x": 205,
+    "y": 523
+  },
+  {
+    "stage": 7,
+    "name": "cossonayromainmotier",
+    "latitude": 46.60604091058485,
+    "longitude": 6.5234835057053715,
+    "x": 214,
+    "y": 482
+  },
+  {
+    "stage": 8,
+    "name": "romainmotierorbe",
+    "latitude": 46.693642356200144,
+    "longitude": 6.460701832314953,
+    "x": 195,
+    "y": 444
+  },
+  {
+    "stage": 9,
+    "name": "orbeyverdonlesbains",
+    "latitude": 46.72421370702796,
+    "longitude": 6.530525504145771,
+    "x": 216,
+    "y": 431
+  },
+  {
+    "stage": 10,
+    "name": "yverdonlesbainsstaubin",
+    "latitude": 46.781529447995126,
+    "longitude": 6.640936984913424,
+    "x": 248,
+    "y": 406
+  },
+  {
+    "stage": 11,
+    "name": "staubinneuchatel",
+    "latitude": 46.89846186363138,
+    "longitude": 6.78128302260302,
+    "x": 290,
+    "y": 355
+  },
+  {
+    "stage": 12,
+    "name": "neuchatelins",
+    "latitude": 46.99637747881934,
+    "longitude": 6.935932743130252,
+    "x": 336,
+    "y": 312
+  },
+  {
+    "stage": 13,
+    "name": "insgummenen",
+    "latitude": 46.999972310848534,
+    "longitude": 7.099797618109733,
+    "x": 385,
+    "y": 311
+  },
+  {
+    "stage": 14,
+    "name": "gummenenbern",
+    "latitude": 46.94183011353016,
+    "longitude": 7.234582080272958,
+    "x": 425,
+    "y": 336
+  },
+  {
+    "stage": 15,
+    "name": "bernaarberg",
+    "latitude": 46.94840111909434,
+    "longitude": 7.440226090839133,
+    "x": 485,
+    "y": 333
+  },
+  {
+    "stage": 16,
+    "name": "aarbergburenanderaare",
+    "latitude": 47.044628420844674,
+    "longitude": 7.278465348994359,
+    "x": 438,
+    "y": 291
+  },
+  {
+    "stage": 17,
+    "name": "burenanderaaresolothurn",
+    "latitude": 47.13817131659016,
+    "longitude": 7.371254333062097,
+    "x": 465,
+    "y": 250
+  },
+  {
+    "stage": 18,
+    "name": "solothurnaarwangen",
+    "latitude": 47.204430018085986,
+    "longitude": 7.543229311704636,
+    "x": 516,
+    "y": 222
+  },
+  {
+    "stage": 19,
+    "name": "aarwangenzofingen",
+    "latitude": 47.245241205440834,
+    "longitude": 7.763669362990186,
+    "x": 581,
+    "y": 204
+  },
+  {
+    "stage": 20,
+    "name": "zofingenaarau",
+    "latitude": 47.28842258476652,
+    "longitude": 7.94363055517897,
+    "x": 635,
+    "y": 185
+  },
+  {
+    "stage": 21,
+    "name": "aaraulenzburg",
+    "latitude": 47.39093809016049,
+    "longitude": 8.052318064961582,
+    "x": 667,
+    "y": 140
+  },
+  {
+    "stage": 22,
+    "name": "lenzburgbrugg",
+    "latitude": 47.39094884414226,
+    "longitude": 8.17031545797363,
+    "x": 702,
+    "y": 140
+  },
+  {
+    "stage": 23,
+    "name": "bruggbaden",
+    "latitude": 47.48141000443138,
+    "longitude": 8.210604961961508,
+    "x": 714,
+    "y": 101
+  },
+  {
+    "stage": 24,
+    "name": "badenzurich",
+    "latitude": 47.476408092770725,
+    "longitude": 8.307862079702318,
+    "x": 743,
+    "y": 103
+  },
+  {
+    "stage": 25,
+    "name": "zurichkloten",
+    "latitude": 47.37874109833501,
+    "longitude": 8.541485073976219,
+    "x": 812,
+    "y": 146
+  },
+  {
+    "stage": 26,
+    "name": "kloteneglisau",
+    "latitude": 47.44859810988419,
+    "longitude": 8.583565081469715,
+    "x": 824,
+    "y": 115
+  },
+  {
+    "stage": 27,
+    "name": "eglisauschaffhausen",
+    "latitude": 47.5728960915003,
+    "longitude": 8.516097081359476,
+    "x": 804,
+    "y": 61
+  },
+  {
+    "stage": 28,
+    "name": "schaffhausenbarzheim",
+    "latitude": 47.69760310323909,
+    "longitude": 8.63250808417797,
+    "x": 839,
+    "y": 7
+  }
+]

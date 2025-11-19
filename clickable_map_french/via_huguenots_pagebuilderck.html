@@ -1,0 +1,218 @@
+<!-- CODE POUR PAGE BUILDER CK - VIA HUGUENOTS -->
+
+<!-- ÉTAPE 1: Ajouter ce CSS dans un module "Custom HTML" ou dans votre template -->
+<style>
+    .via-map-container {
+        position: relative;
+        width: 100%;
+        max-width: 1170px;
+        margin: 0 auto;
+    }
+
+    .via-map-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .via-map-container svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .via-stage-marker {
+        pointer-events: all;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .via-stage-marker circle {
+        fill: #14a232;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.8;
+    }
+
+    .via-stage-marker:hover circle {
+        fill: #bf7514;
+        opacity: 1;
+    }
+
+    .via-stage-marker text {
+        fill: white;
+        font-size: 12px;
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+    }
+
+    .via-tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+        max-width: 300px;
+        white-space: nowrap;
+    }
+
+    .via-tooltip.show {
+        opacity: 1;
+    }
+
+    .via-tooltip .stage-name {
+        font-weight: bold;
+        color: #14a232;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .via-tooltip .stage-distance {
+        font-size: 12px;
+        color: #ccc;
+    }
+
+    @media (max-width: 768px) {
+        .via-stage-marker text {
+            font-size: 10px;
+        }
+        .via-tooltip {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+    }
+</style>
+
+<!-- ÉTAPE 2: Ajouter ce HTML dans Page Builder CK -->
+<div class="via-map-container" id="viaMapContainer">
+    <img src="images/map_chemin_layer.jpg" alt="Carte Via Huguenots" id="viaMapImage">
+    <svg id="viaMapSvg" viewBox="0 0 1170 705" preserveAspectRatio="xMidYMid meet">
+        <!-- Les marqueurs seront ajoutés par JavaScript -->
+    </svg>
+</div>
+
+<div class="via-tooltip" id="viaTooltip">
+    <span class="stage-name"></span>
+    <span class="stage-distance"></span>
+</div>
+
+<!-- ÉTAPE 3: Ajouter ce JavaScript (peut être dans un module ou en bas de page) -->
+<script>
+(function() {
+    // Données des étapes
+    const stages = [
+        { id: "01", name: "Chancy - Genève Plainpalais", distance: "27.5 km", x: 48, y: 689, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/1-1-chancy-frontiere-fr-ch-plainpalais-geneve" },
+        { id: "02", name: "Genève Plainpalais - Versoix", distance: "12.8 km", x: 80, y: 670, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/1-3-plainpalais-geneve-versoix" },
+        { id: "03", name: "Versoix - Nyon", distance: "24.8 km", x: 120, y: 655, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/03-versoix-nyon" },
+        { id: "04", name: "Nyon - Rolle", distance: "20.8 km", x: 160, y: 640, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/04-nyon-rolle" },
+        { id: "05", name: "Rolle - Morges", distance: "24.3 km", x: 200, y: 625, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/1-7-rolle-morges" },
+        { id: "06", name: "Morges - Cossonay", distance: "19.9 km", x: 230, y: 605, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/06-morges-cossonay" },
+        { id: "07", name: "Cossonay - Romainmôtier", distance: "22 km", x: 260, y: 575, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/07-cossonay-romainmotier" },
+        { id: "08", name: "Romainmôtier - Orbe", distance: "14 km", x: 285, y: 555, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/08-romainmotier-orbe" },
+        { id: "09", name: "Orbe - Yverdon-les-Bains", distance: "20.5 km", x: 310, y: 535, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/09-orbe-yverdon" },
+        { id: "10", name: "Yverdon-les-Bains - St-Aubin", distance: "20.9 km", x: 340, y: 510, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/10-yverdon-st-aubin" },
+        { id: "11", name: "St-Aubin - Neuchâtel", distance: "20.5 km", x: 380, y: 485, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/11-st-aubin-neuchatel" },
+        { id: "12", name: "Neuchâtel - Ins", distance: "18.2 km", x: 420, y: 455, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/12-neuchatel-ins" },
+        { id: "13", name: "Ins - Gümmenen", distance: "25.6 km", x: 455, y: 425, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/13-ins-guemmenen" },
+        { id: "14", name: "Gümmenen - Berne", distance: "21.3 km", x: 485, y: 395, url: "/fr/berne" },
+        { id: "15", name: "Berne - Aarberg", distance: "23.5 km", x: 515, y: 365, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/15-berne-aarberg" },
+        { id: "16", name: "Aarberg - Büren", distance: "23.3 km", x: 545, y: 335, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/16-aarberg-bueren" },
+        { id: "17", name: "Büren - Solothurn", distance: "20.4 km", x: 575, y: 305, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/17-bueren-soleure" },
+        { id: "18", name: "Solothurn - Aarwagen", distance: "22.3 km", x: 605, y: 275, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/18-soleure-aarwangen" },
+        { id: "19", name: "Aarwangen - Zofingen", distance: "21.5 km", x: 635, y: 245, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/2-12-aarwangen-zofingen" },
+        { id: "20", name: "Zofingen - Aarau", distance: "18.5 km", x: 665, y: 215, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/2-13-zofingen-aarau" },
+        { id: "21", name: "Aarau - Lenzburg", distance: "18.5 km", x: 695, y: 185, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/2-14-aarau-lenzburg-musee-burghalde-itineraire-balise" },
+        { id: "22", name: "Lenzburg - Brugg", distance: "17.2 km", x: 720, y: 160, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/22-lenzburg-brugg" },
+        { id: "23", name: "Brugg - Baden", distance: "12.5 km", x: 745, y: 135, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/23-brugg-baden" },
+        { id: "24", name: "Baden - Zurich", distance: "26.8 km", x: 775, y: 105, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/24-baden-zurich" },
+        { id: "25", name: "Zurich - Kloten", distance: "15.3 km", x: 800, y: 75, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/25-zurich-kloten" },
+        { id: "26", name: "Kloten - Eglisau", distance: "20.9 km", x: 820, y: 50, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/26-kloten-eglisau" },
+        { id: "27", name: "Eglisau - Schaffhausen", distance: "29.8 km", x: 835, y: 25, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/27-eglisau-schaffhouse" },
+        { id: "28", name: "Schaffhausen - Barzheim", distance: "16.0 km", x: 839, y: 7, url: "/fr/le-chemin/en-suisse/itineraires-suissemobile/28-schaffhouse-barzheim" }
+    ];
+
+    const svg = document.getElementById('viaMapSvg');
+    const tooltip = document.getElementById('viaTooltip');
+    
+    if (!svg || !tooltip) return;
+    
+    // Créer les marqueurs
+    stages.forEach((stage) => {
+        const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        group.classList.add('via-stage-marker');
+        group.setAttribute('data-stage-id', stage.id);
+        
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', stage.x);
+        circle.setAttribute('cy', stage.y);
+        circle.setAttribute('r', '10');
+        
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', stage.x);
+        text.setAttribute('y', stage.y);
+        text.textContent = stage.id;
+        
+        group.appendChild(circle);
+        group.appendChild(text);
+        svg.appendChild(group);
+        
+        // Événements
+        group.addEventListener('click', function() {
+            window.location.href = stage.url;
+        });
+        
+        group.addEventListener('mouseenter', function(e) {
+            tooltip.querySelector('.stage-name').textContent = stage.id + ' - ' + stage.name;
+            tooltip.querySelector('.stage-distance').textContent = stage.distance;
+            tooltip.classList.add('show');
+            updateTooltipPosition(e);
+        });
+        
+        group.addEventListener('mousemove', updateTooltipPosition);
+        
+        group.addEventListener('mouseleave', function() {
+            tooltip.classList.remove('show');
+        });
+    });
+    
+    function updateTooltipPosition(e) {
+        const x = e.clientX;
+        const y = e.clientY;
+        tooltip.style.left = (x + 15) + 'px';
+        tooltip.style.top = (y - 10) + 'px';
+    }
+})();
+</script>
+
+<!-- 
+INSTRUCTIONS D'INSTALLATION DANS JOOMLA / PAGE BUILDER CK:
+
+1. Uploadez l'image map_chemin_layer.jpg dans votre répertoire images/ de Joomla
+
+2. Dans Page Builder CK, créez un nouveau module "Custom HTML"
+
+3. Copiez-collez le CSS (ÉTAPE 1) dans la section "Head" de votre template ou dans un module
+
+4. Copiez-collez le HTML (ÉTAPE 2) dans le module Page Builder CK
+
+5. Copiez-collez le JavaScript (ÉTAPE 3) à la fin de votre page ou dans un module JavaScript
+
+6. Ajustez le chemin de l'image si nécessaire (ligne avec src="images/map_chemin_layer.jpg")
+
+7. Testez en prévisualisant la page
+
+PERSONNALISATION:
+- Couleurs des points : modifier les valeurs dans le CSS (.via-stage-marker circle)
+- Taille des points : modifier la valeur 'r' dans le JavaScript
+- Style du tooltip : modifier .via-tooltip dans le CSS
+-->
