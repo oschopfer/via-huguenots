@@ -65,6 +65,14 @@
             max-width: none;
         }
 
+        #connectionsSvg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 5;
+        }
+
         .marker {
             position: absolute;
             width: 24px;
@@ -79,8 +87,11 @@
             z-index: 10;
         }
 
+        .marker.urban {
+            background: #2196F3;
+        }
+
         .marker:hover {
-            background: #ff5252;
             transform: translate(-50%, -50%) scale(1.2);
             z-index: 20;
         }
@@ -106,7 +117,7 @@
         }
 
         .sidebar {
-            width: 400px;
+            width: 450px;
             background: #fafafa;
             overflow-y: auto;
             display: flex;
@@ -200,10 +211,6 @@
             font-family: inherit;
         }
 
-        input[type="number"] {
-            width: 100%;
-        }
-
         textarea {
             resize: vertical;
             min-height: 60px;
@@ -233,6 +240,15 @@
             border-left: 4px solid #ffc107;
         }
 
+        .success-box {
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            margin-bottom: 15px;
+            border-left: 4px solid #28a745;
+        }
+
         .stage-list {
             max-height: 200px;
             overflow-y: auto;
@@ -246,6 +262,12 @@
             border-bottom: 1px solid #eee;
             cursor: pointer;
             transition: background 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .stage-item.urban {
+            background: #e3f2fd;
         }
 
         .stage-item:hover {
@@ -261,7 +283,20 @@
             border-bottom: none;
         }
 
-        #jsonInput {
+        .stage-badge {
+            background: #666;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 8px;
+        }
+
+        .stage-badge.urban {
+            background: #2196F3;
+        }
+
+        #jsonInput, #imageInput {
             display: none;
         }
 
@@ -276,7 +311,7 @@
             <h1>🗺️ Éditeur de carte Via Huguenots</h1>
             <div class="instructions">
                 <strong>Instructions:</strong> Cliquez sur un marqueur pour le sélectionner, puis déplacez-le en cliquant sur la carte.
-                Vous pouvez aussi modifier les coordonnées manuellement dans le panneau de droite.
+                Les marqueurs <span style="color: #2196F3;">bleus</span> sont les itinéraires urbains avec lignes de connexion.
             </div>
         </header>
 
@@ -284,6 +319,7 @@
             <div class="map-container">
                 <div id="map">
                     <img id="mapImage" src="" alt="Carte">
+                    <svg id="connectionsSvg" width="0" height="0"></svg>
                 </div>
             </div>
 
@@ -298,7 +334,7 @@
                         <button class="btn-danger" onclick="deleteStage()" id="deleteBtn" disabled>🗑️ Supprimer</button>
                     </div>
                     <input type="file" id="jsonInput" accept=".json" onchange="handleFileSelect(event)">
-                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)" style="display:none">
+                    <input type="file" id="imageInput" accept="image/*" onchange="handleImageSelect(event)">
                     <button class="btn-secondary" onclick="document.getElementById('imageInput').click()" style="width: 100%;">🖼️ Charger image</button>
                 </div>
 
@@ -313,8 +349,8 @@
                         <h3 style="margin-bottom: 15px;">Édition de l'étape</h3>
 
                         <div class="form-group">
-                            <label>Numéro d'étape</label>
-                            <input type="number" id="stageNum" min="1">
+                            <label>ID de l'étape (ex: 1, 01bis, 05bis2, regional)</label>
+                            <input type="text" id="stageId">
                         </div>
 
                         <div class="form-group">
@@ -364,19 +400,40 @@
                         </div>
 
                         <div class="info-box">
-                            <strong>Coordonnées pixel sur la carte</strong><br>
+                            <strong>Coordonnées pixel (position centrale)</strong><br>
                             Cliquez sur la carte pour repositionner
                         </div>
 
                         <div class="coords-group">
                             <div class="form-group">
                                 <label>X (pixel)</label>
-                                <input type="number" id="pixelX" min="0">
+                                <input type="number" id="pixelX" min="0" onchange="updateOffsetPreview()">
                             </div>
                             <div class="form-group">
                                 <label>Y (pixel)</label>
-                                <input type="number" id="pixelY" min="0">
+                                <input type="number" id="pixelY" min="0" onchange="updateOffsetPreview()">
                             </div>
+                        </div>
+
+                        <div class="success-box">
+                            <strong>Décalage visuel (pour points superposés)</strong><br>
+                            Le marqueur sera déplacé selon ces valeurs et relié au point central
+                        </div>
+
+                        <div class="coords-group">
+                            <div class="form-group">
+                                <label>Distance du décalage (pixels)</label>
+                                <input type="number" id="offsetDistance" min="0" value="0" onchange="updateOffsetPreview()">
+                            </div>
+                            <div class="form-group">
+                                <label>Angle du décalage (degrés, 0=droite)</label>
+                                <input type="number" id="offsetAngle" min="0" max="359" value="0" onchange="updateOffsetPreview()">
+                            </div>
+                        </div>
+
+                        <div id="offsetPreview" class="info-box hidden">
+                            <strong>Aperçu:</strong><br>
+                            Position calculée: <span id="previewPos"></span>
                         </div>
 
                         <button class="btn-primary" onclick="saveCurrentStage()" style="width: 100%; margin-top: 15px;">
@@ -394,10 +451,30 @@
         let isRepositioning = false;
         let mapImage = null;
 
+        // Calculer la position du marqueur avec offset
+        function calculateMarkerPosition(stage) {
+            if (!stage.offset_distance || stage.offset_distance === 0) {
+                return { x: stage.x, y: stage.y };
+            }
+
+            const angleRad = (stage.offset_angle || 0) * Math.PI / 180;
+            const offsetX = stage.offset_distance * Math.cos(angleRad);
+            const offsetY = -stage.offset_distance * Math.sin(angleRad); // Négatif car Y augmente vers le bas
+
+            return {
+                x: stage.x + offsetX,
+                y: stage.y + offsetY
+            };
+        }
+
         // Charger l'image par défaut au démarrage
         window.onload = function() {
             mapImage = document.getElementById('mapImage');
             mapImage.src = 'map_chemin_layer.jpg';
+
+            mapImage.onload = function() {
+                updateSvgSize();
+            };
 
             // Auto-charger le JSON au démarrage
             fetch('via_huguenots_merged.json')
@@ -409,6 +486,14 @@
                 })
                 .catch(err => console.log('Fichier JSON non trouvé, utilisez "Charger JSON"'));
         };
+
+        function updateSvgSize() {
+            const svg = document.getElementById('connectionsSvg');
+            if (mapImage.complete) {
+                svg.setAttribute('width', mapImage.naturalWidth);
+                svg.setAttribute('height', mapImage.naturalHeight);
+            }
+        }
 
         function loadData() {
             document.getElementById('jsonInput').click();
@@ -439,9 +524,16 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 mapImage.src = e.target.result;
-                renderMarkers();
+                mapImage.onload = function() {
+                    updateSvgSize();
+                    renderMarkers();
+                };
             };
             reader.readAsDataURL(file);
+        }
+
+        function isUrbanRoute(id) {
+            return id && (id.includes('bis') || id === 'regional');
         }
 
         function renderStageList() {
@@ -451,12 +543,57 @@
             stages.forEach((stage, index) => {
                 const item = document.createElement('div');
                 item.className = 'stage-item';
+                if (isUrbanRoute(stage.id)) {
+                    item.classList.add('urban');
+                }
                 if (index === selectedStageIndex) {
                     item.classList.add('selected');
                 }
-                item.textContent = `${stage.stage}. ${stage.name_full_fr || stage.name_short}`;
+
+                const text = document.createElement('span');
+                text.textContent = `${stage.id}. ${stage.name_full_fr || stage.name_short}`;
+                item.appendChild(text);
+
+                if (isUrbanRoute(stage.id)) {
+                    const badge = document.createElement('span');
+                    badge.className = 'stage-badge urban';
+                    badge.textContent = 'URBAIN';
+                    item.appendChild(badge);
+                }
+
                 item.onclick = () => selectStage(index);
                 list.appendChild(item);
+            });
+        }
+
+        function renderConnectionLines() {
+            const svg = document.getElementById('connectionsSvg');
+            svg.innerHTML = '';
+
+            stages.forEach((stage) => {
+                if (stage.offset_distance && stage.offset_distance > 0) {
+                    const markerPos = calculateMarkerPosition(stage);
+
+                    // Créer une ligne
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.setAttribute('x1', stage.x);
+                    line.setAttribute('y1', stage.y);
+                    line.setAttribute('x2', markerPos.x);
+                    line.setAttribute('y2', markerPos.y);
+                    line.setAttribute('stroke', '#2196F3');
+                    line.setAttribute('stroke-width', '2');
+                    line.setAttribute('stroke-dasharray', '5,3');
+                    svg.appendChild(line);
+
+                    // Créer un petit cercle au point central
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', stage.x);
+                    circle.setAttribute('cy', stage.y);
+                    circle.setAttribute('r', '4');
+                    circle.setAttribute('fill', '#2196F3');
+                    circle.setAttribute('opacity', '0.5');
+                    svg.appendChild(circle);
+                }
             });
         }
 
@@ -465,19 +602,33 @@
             const oldMarkers = document.querySelectorAll('.marker');
             oldMarkers.forEach(m => m.remove());
 
+            // Mettre à jour la taille du SVG
+            updateSvgSize();
+
+            // Rendre les lignes de connexion
+            renderConnectionLines();
+
             // Créer les nouveaux marqueurs
             stages.forEach((stage, index) => {
                 const marker = document.createElement('div');
                 marker.className = 'marker';
+
+                if (isUrbanRoute(stage.id)) {
+                    marker.classList.add('urban');
+                }
+
                 if (index === selectedStageIndex) {
                     marker.classList.add('selected');
                 }
-                marker.style.left = stage.x + 'px';
-                marker.style.top = stage.y + 'px';
+
+                // Utiliser la position calculée avec offset
+                const pos = calculateMarkerPosition(stage);
+                marker.style.left = pos.x + 'px';
+                marker.style.top = pos.y + 'px';
 
                 const label = document.createElement('div');
                 label.className = 'marker-label';
-                label.textContent = stage.stage;
+                label.textContent = stage.id;
                 marker.appendChild(label);
 
                 marker.onclick = (e) => {
@@ -499,17 +650,21 @@
 
             // Remplir le formulaire
             document.getElementById('editForm').classList.remove('hidden');
-            document.getElementById('stageNum').value = stage.stage;
-            document.getElementById('nameShort').value = stage.name_short;
+            document.getElementById('stageId').value = stage.id || '';
+            document.getElementById('nameShort').value = stage.name_short || '';
             document.getElementById('nameFullFr').value = stage.name_full_fr || '';
             document.getElementById('nameFullDe').value = stage.name_full_de || '';
             document.getElementById('distance').value = stage.distance || '';
             document.getElementById('urlFr').value = stage.url_fr || '';
             document.getElementById('urlDe').value = stage.url_de || '';
-            document.getElementById('latitude').value = stage.latitude;
-            document.getElementById('longitude').value = stage.longitude;
-            document.getElementById('pixelX').value = stage.x;
-            document.getElementById('pixelY').value = stage.y;
+            document.getElementById('latitude').value = stage.latitude || 0;
+            document.getElementById('longitude').value = stage.longitude || 0;
+            document.getElementById('pixelX').value = stage.x || 0;
+            document.getElementById('pixelY').value = stage.y || 0;
+            document.getElementById('offsetDistance').value = stage.offset_distance || 0;
+            document.getElementById('offsetAngle').value = stage.offset_angle || 0;
+
+            updateOffsetPreview();
 
             document.getElementById('deleteBtn').disabled = false;
 
@@ -517,11 +672,33 @@
             isRepositioning = true;
         }
 
+        function updateOffsetPreview() {
+            if (selectedStageIndex === null) return;
+
+            const x = parseInt(document.getElementById('pixelX').value) || 0;
+            const y = parseInt(document.getElementById('pixelY').value) || 0;
+            const distance = parseInt(document.getElementById('offsetDistance').value) || 0;
+            const angle = parseInt(document.getElementById('offsetAngle').value) || 0;
+
+            if (distance > 0) {
+                const angleRad = angle * Math.PI / 180;
+                const offsetX = distance * Math.cos(angleRad);
+                const offsetY = -distance * Math.sin(angleRad);
+                const finalX = Math.round(x + offsetX);
+                const finalY = Math.round(y + offsetY);
+
+                document.getElementById('offsetPreview').classList.remove('hidden');
+                document.getElementById('previewPos').textContent = `X=${finalX}, Y=${finalY}`;
+            } else {
+                document.getElementById('offsetPreview').classList.add('hidden');
+            }
+        }
+
         function saveCurrentStage() {
             if (selectedStageIndex === null) return;
 
             const stage = stages[selectedStageIndex];
-            stage.stage = parseInt(document.getElementById('stageNum').value);
+            stage.id = document.getElementById('stageId').value;
             stage.name_short = document.getElementById('nameShort').value;
             stage.name_full_fr = document.getElementById('nameFullFr').value;
             stage.name_full_de = document.getElementById('nameFullDe').value;
@@ -532,6 +709,8 @@
             stage.longitude = parseFloat(document.getElementById('longitude').value);
             stage.x = parseInt(document.getElementById('pixelX').value);
             stage.y = parseInt(document.getElementById('pixelY').value);
+            stage.offset_distance = parseInt(document.getElementById('offsetDistance').value) || 0;
+            stage.offset_angle = parseInt(document.getElementById('offsetAngle').value) || 0;
 
             renderStageList();
             renderMarkers();
@@ -540,8 +719,13 @@
         }
 
         function addStage() {
+            const maxId = stages.reduce((max, s) => {
+                const num = parseInt(s.id);
+                return isNaN(num) ? max : Math.max(max, num);
+            }, 0);
+
             const newStage = {
-                stage: stages.length + 1,
+                id: String(maxId + 1),
                 name_short: "nouvelle_etape",
                 latitude: 46.5,
                 longitude: 6.5,
@@ -551,7 +735,9 @@
                 name_full_fr: "Nouvelle étape",
                 url_fr: "",
                 name_full_de: "Neue Etappe",
-                url_de: ""
+                url_de: "",
+                offset_distance: 0,
+                offset_angle: 0
             };
 
             stages.push(newStage);
@@ -587,7 +773,7 @@
             alert('✅ Fichier JSON téléchargé!');
         }
 
-        // Clic sur la carte pour repositionner
+        // Clic sur la carte pour repositionner (position centrale, pas le marqueur décalé)
         document.getElementById('map').addEventListener('click', function(e) {
             if (!isRepositioning || selectedStageIndex === null) return;
 
@@ -601,22 +787,8 @@
             document.getElementById('pixelX').value = Math.round(x);
             document.getElementById('pixelY').value = Math.round(y);
 
+            updateOffsetPreview();
             renderMarkers();
-        });
-
-        // Synchroniser les champs de coordonnées pixel avec les changements manuels
-        document.getElementById('pixelX').addEventListener('change', function() {
-            if (selectedStageIndex !== null) {
-                stages[selectedStageIndex].x = parseInt(this.value);
-                renderMarkers();
-            }
-        });
-
-        document.getElementById('pixelY').addEventListener('change', function() {
-            if (selectedStageIndex !== null) {
-                stages[selectedStageIndex].y = parseInt(this.value);
-                renderMarkers();
-            }
         });
     </script>
 </body>
