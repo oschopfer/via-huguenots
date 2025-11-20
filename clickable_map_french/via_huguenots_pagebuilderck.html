@@ -1,0 +1,411 @@
+<!-- CODE POUR PAGE BUILDER CK - VIA HUGUENOTS -->
+
+<!-- ÉTAPE 1: Ajouter ce CSS dans un module "Custom HTML" ou dans votre template -->
+<style>
+    .via-map-container {
+        position: relative;
+        width: 100%;
+        max-width: 1170px;
+        margin: 0 auto;
+    }
+
+    .via-map-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .via-map-container svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .via-stage-marker {
+        pointer-events: all;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* Type-specific colors with transparency */
+    .via-stage-marker.stage circle {
+        fill: #ff6b6b;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.alternative circle {
+        fill: #FF9800;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.urban circle {
+        fill: #2196F3;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.special circle {
+        fill: #9C27B0;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.regional rect {
+        fill: #4CAF50;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker:hover circle,
+    .via-stage-marker:hover rect {
+        opacity: 0.8;
+    }
+
+    .via-stage-marker text {
+        fill: white;
+        font-size: 10px;
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+    }
+
+    .via-connection-line {
+        stroke-width: 2;
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .via-tooltip {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+        max-width: 300px;
+        white-space: nowrap;
+    }
+
+    .via-tooltip.show {
+        opacity: 1;
+    }
+
+    .via-tooltip .stage-name {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .via-tooltip .stage-name.stage {
+        color: #ff6b6b;
+    }
+
+    .via-tooltip .stage-name.alternative {
+        color: #FF9800;
+    }
+
+    .via-tooltip .stage-name.urban {
+        color: #2196F3;
+    }
+
+    .via-tooltip .stage-name.special {
+        color: #9C27B0;
+    }
+
+    .via-tooltip .stage-name.regional {
+        color: #4CAF50;
+    }
+
+    .via-tooltip .stage-distance {
+        font-size: 12px;
+        color: #ccc;
+    }
+
+    .via-legend {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .via-legend-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .via-legend-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+
+    .via-legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 5px;
+        opacity: 0.7;
+    }
+
+    .via-legend-rect {
+        width: 16px;
+        height: 10px;
+        margin-right: 5px;
+        opacity: 0.7;
+    }
+
+    .via-legend-stage {
+        background: #ff6b6b;
+    }
+
+    .via-legend-alternative {
+        background: #FF9800;
+    }
+
+    .via-legend-urban {
+        background: #2196F3;
+    }
+
+    .via-legend-special {
+        background: #9C27B0;
+    }
+
+    .via-legend-regional {
+        background: #4CAF50;
+    }
+
+    @media (max-width: 768px) {
+        .via-stage-marker text {
+            font-size: 8px;
+        }
+        .via-tooltip {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        .via-legend {
+            font-size: 11px;
+        }
+        .via-legend-item {
+            display: block;
+            margin-bottom: 8px;
+        }
+    }
+</style>
+
+<!-- ÉTAPE 2: Ajouter ce HTML dans Page Builder CK -->
+<div class="via-map-container" id="viaMapContainer">
+    <img src="images/map_chemin_layer.jpg" alt="Carte Via Huguenots" id="viaMapImage">
+    <svg id="viaMapSvg" viewBox="0 0 1170 705" preserveAspectRatio="xMidYMid meet">
+        <!-- Les marqueurs seront ajoutés par JavaScript -->
+    </svg>
+</div>
+
+<div class="via-tooltip" id="viaTooltip">
+    <span class="stage-name"></span>
+    <span class="stage-distance"></span>
+</div>
+
+<div class="via-legend">
+    <div class="via-legend-title">Légende:</div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-stage"></div>
+        <span>Étapes</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-alternative"></div>
+        <span>Alternatives</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-urban"></div>
+        <span>Urbains</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-special"></div>
+        <span>Spéciaux</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-rect via-legend-regional"></div>
+        <span>Régionaux</span>
+    </div>
+</div>
+
+<!-- ÉTAPE 3: Ajouter ce JavaScript (peut être dans un module ou en bas de page) -->
+<script>
+(function() {
+    // Configuration des couleurs par type
+    const typeColors = {
+        'stage': '#ff6b6b',
+        'alternative': '#FF9800',
+        'urban': '#2196F3',
+        'special': '#9C27B0',
+        'regional': '#4CAF50'
+    };
+
+    // Charger les données depuis le JSON
+    fetch('clickable_map_french/via_huguenots_merged.json')
+        .then(response => response.json())
+        .then(stages => {
+            initMap(stages);
+        })
+        .catch(error => {
+            console.error('Erreur de chargement des données:', error);
+        });
+
+    function initMap(stages) {
+        const svg = document.getElementById('viaMapSvg');
+        const tooltip = document.getElementById('viaTooltip');
+
+        if (!svg || !tooltip) return;
+
+        // Calculer la position d'affichage du marqueur (avec offset si nécessaire)
+        function calculateMarkerPosition(stage) {
+            if (!stage.offset_distance || stage.offset_distance === 0) {
+                return { x: stage.x, y: stage.y };
+            }
+            const angleRad = (stage.offset_angle || 0) * Math.PI / 180;
+            const offsetX = stage.offset_distance * Math.cos(angleRad);
+            const offsetY = -stage.offset_distance * Math.sin(angleRad);
+            return {
+                x: stage.x + offsetX,
+                y: stage.y + offsetY
+            };
+        }
+
+        // Créer les lignes de connexion pour les marqueurs avec offset
+        stages.forEach((stage) => {
+            if (stage.offset_distance && stage.offset_distance > 0) {
+                const markerPos = calculateMarkerPosition(stage);
+                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                line.classList.add('via-connection-line');
+                line.setAttribute('x1', stage.x);
+                line.setAttribute('y1', stage.y);
+                line.setAttribute('x2', markerPos.x);
+                line.setAttribute('y2', markerPos.y);
+                line.setAttribute('stroke', typeColors[stage.type] || '#999');
+                svg.appendChild(line);
+            }
+        });
+
+        // Créer les marqueurs
+        stages.forEach((stage) => {
+            const markerPos = calculateMarkerPosition(stage);
+            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+            group.classList.add('via-stage-marker', stage.type);
+            group.setAttribute('data-stage-id', stage.id);
+
+            // Créer un rectangle pour les routes régionales, un cercle pour les autres
+            if (stage.type === 'regional') {
+                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                rect.setAttribute('x', markerPos.x - 25);
+                rect.setAttribute('y', markerPos.y - 10);
+                rect.setAttribute('width', '50');
+                rect.setAttribute('height', '20');
+                rect.setAttribute('rx', '3');
+                group.appendChild(rect);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', markerPos.x);
+                text.setAttribute('y', markerPos.y);
+                text.textContent = 'REG';
+                group.appendChild(text);
+            } else {
+                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                circle.setAttribute('cx', markerPos.x);
+                circle.setAttribute('cy', markerPos.y);
+                circle.setAttribute('r', '10');
+                group.appendChild(circle);
+
+                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                text.setAttribute('x', markerPos.x);
+                text.setAttribute('y', markerPos.y);
+                text.textContent = stage.id;
+                group.appendChild(text);
+            }
+
+            svg.appendChild(group);
+
+            // Événements
+            group.addEventListener('click', function() {
+                window.location.href = stage.url_fr;
+            });
+
+            group.addEventListener('mouseenter', function(e) {
+                const nameSpan = tooltip.querySelector('.stage-name');
+                nameSpan.textContent = stage.name_full_fr;
+                nameSpan.className = 'stage-name ' + stage.type;
+                tooltip.querySelector('.stage-distance').textContent = stage.distance || '';
+                tooltip.classList.add('show');
+                updateTooltipPosition(e);
+            });
+
+            group.addEventListener('mousemove', updateTooltipPosition);
+
+            group.addEventListener('mouseleave', function() {
+                tooltip.classList.remove('show');
+            });
+        });
+
+        function updateTooltipPosition(e) {
+            const x = e.clientX;
+            const y = e.clientY;
+            tooltip.style.left = (x + 15) + 'px';
+            tooltip.style.top = (y - 10) + 'px';
+        }
+    }
+})();
+</script>
+
+<!--
+INSTRUCTIONS D'INSTALLATION DANS JOOMLA / PAGE BUILDER CK:
+
+1. Uploadez l'image map_chemin_layer.jpg dans votre répertoire images/ de Joomla
+
+2. Uploadez le fichier via_huguenots_merged.json dans le répertoire clickable_map_french/
+
+3. Dans Page Builder CK, créez un nouveau module "Custom HTML"
+
+4. Copiez-collez le CSS (ÉTAPE 1) dans la section "Head" de votre template ou dans un module
+
+5. Copiez-collez le HTML (ÉTAPE 2) dans le module Page Builder CK
+
+6. Copiez-collez le JavaScript (ÉTAPE 3) à la fin de votre page ou dans un module JavaScript
+
+7. Ajustez les chemins des fichiers si nécessaire:
+   - Image: src="images/map_chemin_layer.jpg"
+   - JSON: fetch('clickable_map_french/via_huguenots_merged.json')
+
+8. Testez en prévisualisant la page
+
+STRUCTURE DES DONNÉES:
+Le fichier JSON contient désormais 38 entrées (28 étapes + 10 variantes):
+- Étapes principales (type: "stage"): 1-28
+- Itinéraires alternatifs (type: "alternative"): 01bis, 05bis, 12bis
+- Parcours urbains (type: "urban"): 02bis, 05bis2, 15bis, 25bis, 28bis
+- Spécial (type: "special"): 16bis (Visioguide)
+- Régional (type: "regional"): Routes régionales
+
+PERSONNALISATION:
+- Couleurs des points : modifier les valeurs dans le CSS (typeColors)
+- Taille des points : modifier la valeur 'r' dans le JavaScript (ligne avec setAttribute('r', '10'))
+- Taille des boutons régionaux : modifier width/height du rect
+- Style du tooltip : modifier .via-tooltip dans le CSS
+- Opacité : modifier opacity dans le CSS (actuellement 0.5)
+-->
