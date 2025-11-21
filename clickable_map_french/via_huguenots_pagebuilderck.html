@@ -212,7 +212,7 @@
 
 <!-- ÉTAPE 2: Ajouter ce HTML dans Page Builder CK -->
 <div class="via-map-container" id="viaMapContainer">
-    <img src="images/map_chemin_layer.jpg" alt="Carte Via Huguenots" id="viaMapImage">
+    <img src="files/clickable_map/map_chemin_layer.jpg" alt="Carte Via Huguenots" id="viaMapImage">
     <svg id="viaMapSvg" viewBox="0 0 1170 705" preserveAspectRatio="xMidYMid meet">
         <!-- Les marqueurs seront ajoutés par JavaScript -->
     </svg>
@@ -248,15 +248,18 @@
 </div>
 
 <!-- ÉTAPE 3: Charger le script JavaScript externe -->
-<script src="clickable_map_french/via_huguenots_map.js"></script>
+<script src="files/clickable_map/via_huguenots_map.js"></script>
 
 <!--
 INSTRUCTIONS D'INSTALLATION DANS JOOMLA / PAGE BUILDER CK:
 
-1. Uploadez les fichiers suivants sur votre serveur Joomla:
-   - images/map_chemin_layer.jpg (image de la carte)
-   - clickable_map_french/via_huguenots_merged.json (données JSON)
-   - clickable_map_french/via_huguenots_map.js (script JavaScript)
+1. Uploadez les fichiers suivants sur votre serveur Joomla dans le dossier files/clickable_map/:
+   - files/clickable_map/map_chemin_layer.jpg (image de la carte)
+   - files/clickable_map/via_huguenots_merged.json (données JSON)
+   - files/clickable_map/via_huguenots_map.js (script JavaScript)
+
+   Note: Le dossier files/ est accessible publiquement dans Joomla, contrairement aux
+   dossiers à la racine.
 
 2. Dans Page Builder CK, créez un nouveau module "Custom HTML"
 
@@ -265,15 +268,15 @@ INSTRUCTIONS D'INSTALLATION DANS JOOMLA / PAGE BUILDER CK:
 4. Copiez-collez le HTML (ÉTAPE 2) dans le module Page Builder CK
 
 5. Ajoutez la balise script (ÉTAPE 3) à la fin de votre page:
-   <script src="clickable_map_french/via_huguenots_map.js"></script>
+   <script src="files/clickable_map/via_huguenots_map.js"></script>
 
    Note: Le JavaScript est maintenant dans un fichier séparé pour éviter les problèmes
    de reformatage automatique dans Page Builder CK.
 
-6. Ajustez les chemins des fichiers si nécessaire selon votre structure:
-   - Image: src="images/map_chemin_layer.jpg"
-   - JSON: 'clickable_map_french/via_huguenots_merged.json' (dans via_huguenots_map.js)
-   - Script: src="clickable_map_french/via_huguenots_map.js"
+6. Les chemins sont configurés pour Joomla:
+   - Image: src="files/clickable_map/map_chemin_layer.jpg"
+   - JSON: 'files/clickable_map/via_huguenots_merged.json' (dans via_huguenots_map.js)
+   - Script: src="files/clickable_map/via_huguenots_map.js"
 
 7. Testez en prévisualisant la page
 

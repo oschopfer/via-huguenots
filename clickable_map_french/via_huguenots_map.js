@@ -14,7 +14,7 @@
     };
 
     // Charger les données depuis le JSON
-    fetch('clickable_map_french/via_huguenots_merged.json')
+    fetch('files/clickable_map/via_huguenots_merged.json')
         .then(response => response.json())
         .then(stages => {
             initMap(stages);
