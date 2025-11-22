@@ -121,8 +121,8 @@
     "distance": "97.3 km",
     "name_full_fr": "Morges - Morat",
     "url_fr": "https://www.via-huguenots.ch/fr/le-chemin/en-suisse/itineraires-suissemobile/2-4-1-morges-morat",
-    "offset_distance": 80,
-    "offset_angle": 90,
+    "offset_distance": 50,
+    "offset_angle": 310,
     "name_full_de": "Morges - Murten",
     "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/2-4-1-morges-morat-2",
     "type": "alternative"
