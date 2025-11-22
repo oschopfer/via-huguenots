@@ -1,0 +1,295 @@
+<!-- CODE FÜR PAGE BUILDER CK - VIA HUGUENOTS -->
+
+<!-- SCHRITT 1: Dieses CSS in einem "Custom HTML" Modul oder in Ihrem Template hinzufügen -->
+<style>
+    .via-map-container {
+        position: relative;
+        width: 100%;
+        max-width: 1170px;
+        margin: 0 auto;
+    }
+
+    .via-map-container img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    .via-map-container svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    .via-stage-marker {
+        pointer-events: all;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    /* Type-specific colors with transparency */
+    .via-stage-marker.stage circle {
+        fill: #ff6b6b;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.alternative circle {
+        fill: #FF9800;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.urban circle {
+        fill: #2196F3;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.special circle {
+        fill: #9C27B0;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker.regional rect {
+        fill: #4CAF50;
+        stroke: white;
+        stroke-width: 2;
+        opacity: 0.5;
+    }
+
+    .via-stage-marker:hover circle,
+    .via-stage-marker:hover rect {
+        opacity: 0.8;
+    }
+
+    .via-stage-marker text {
+        fill: white;
+        font-size: 10px;
+        font-weight: bold;
+        text-anchor: middle;
+        dominant-baseline: middle;
+        pointer-events: none;
+    }
+
+    .via-connection-line {
+        stroke-width: 2;
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    .via-tooltip {
+        position: fixed;
+        background: rgba(0, 0, 0, 0.9);
+        color: white;
+        padding: 10px 15px;
+        border-radius: 4px;
+        font-size: 14px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+        max-width: 300px;
+        white-space: nowrap;
+    }
+
+    .via-tooltip.show {
+        opacity: 1;
+    }
+
+    .via-tooltip .stage-name {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .via-tooltip .stage-name.stage {
+        color: #ff6b6b;
+    }
+
+    .via-tooltip .stage-name.alternative {
+        color: #FF9800;
+    }
+
+    .via-tooltip .stage-name.urban {
+        color: #2196F3;
+    }
+
+    .via-tooltip .stage-name.special {
+        color: #9C27B0;
+    }
+
+    .via-tooltip .stage-name.regional {
+        color: #4CAF50;
+    }
+
+    .via-tooltip .stage-distance {
+        font-size: 12px;
+        color: #ccc;
+    }
+
+    .via-legend {
+        margin-top: 15px;
+        padding: 10px;
+        background: #f9f9f9;
+        border-radius: 4px;
+        font-size: 13px;
+    }
+
+    .via-legend-title {
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .via-legend-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 15px;
+        margin-bottom: 5px;
+    }
+
+    .via-legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 5px;
+        opacity: 0.7;
+    }
+
+    .via-legend-rect {
+        width: 16px;
+        height: 10px;
+        margin-right: 5px;
+        opacity: 0.7;
+    }
+
+    .via-legend-stage {
+        background: #ff6b6b;
+    }
+
+    .via-legend-alternative {
+        background: #FF9800;
+    }
+
+    .via-legend-urban {
+        background: #2196F3;
+    }
+
+    .via-legend-special {
+        background: #9C27B0;
+    }
+
+    .via-legend-regional {
+        background: #4CAF50;
+    }
+
+    @media (max-width: 768px) {
+        .via-stage-marker text {
+            font-size: 8px;
+        }
+        .via-tooltip {
+            font-size: 12px;
+            padding: 8px 12px;
+        }
+        .via-legend {
+            font-size: 11px;
+        }
+        .via-legend-item {
+            display: block;
+            margin-bottom: 8px;
+        }
+    }
+</style>
+
+<!-- SCHRITT 2: Dieses HTML in Page Builder CK hinzufügen -->
+<div class="via-map-container" id="viaMapContainer">
+    <img src="files/clickable_map/map_chemin_layer.jpg" alt="Karte Via Huguenots" id="viaMapImage">
+    <svg id="viaMapSvg" viewBox="0 0 1170 705" preserveAspectRatio="xMidYMid meet">
+        <!-- Die Markierungen werden durch JavaScript hinzugefügt -->
+    </svg>
+</div>
+
+<div class="via-tooltip" id="viaTooltip">
+    <span class="stage-name"></span>
+    <span class="stage-distance"></span>
+</div>
+
+<div class="via-legend">
+    <div class="via-legend-title">Legende:</div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-stage"></div>
+        <span>Etappen</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-alternative"></div>
+        <span>Alternativen</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-urban"></div>
+        <span>Stadtrundgänge</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-dot via-legend-special"></div>
+        <span>Spezielle</span>
+    </div>
+    <div class="via-legend-item">
+        <div class="via-legend-rect via-legend-regional"></div>
+        <span>Regionale</span>
+    </div>
+</div>
+
+<!-- SCHRITT 3: Das externe JavaScript laden -->
+<script src="files/clickable_map/via_huguenots_map_de.js"></script>
+
+<!--
+INSTALLATIONSANLEITUNG FÜR JOOMLA / PAGE BUILDER CK:
+
+1. Laden Sie die folgenden Dateien auf Ihren Joomla-Server in den Ordner files/clickable_map/:
+   - files/clickable_map/map_chemin_layer.jpg (Kartenbild)
+   - files/clickable_map/via_huguenots_map_de.js (JavaScript-Datei)
+
+   Hinweis: Der Ordner files/ ist in Joomla öffentlich zugänglich, im Gegensatz zu
+   Ordnern im Stammverzeichnis.
+
+2. Erstellen Sie in Page Builder CK ein neues "Custom HTML"-Modul
+
+3. Kopieren Sie das CSS (SCHRITT 1) in den "Head"-Bereich Ihres Templates oder in ein Modul
+
+4. Kopieren Sie das HTML (SCHRITT 2) in das Page Builder CK-Modul
+
+5. Fügen Sie das Script-Tag (SCHRITT 3) am Ende Ihrer Seite hinzu:
+   <script src="files/clickable_map/via_huguenots_map_de.js"></script>
+
+   Hinweis: Das JavaScript befindet sich jetzt in einer separaten Datei, um Probleme
+   mit der automatischen Formatierung in Page Builder CK zu vermeiden.
+
+6. Die Pfade sind für Joomla konfiguriert:
+   - Bild: src="files/clickable_map/map_chemin_layer.jpg"
+   - Script: src="files/clickable_map/via_huguenots_map_de.js"
+
+7. Testen Sie die Seite in der Vorschau
+
+DATENSTRUKTUR:
+Die Daten enthalten 38 Einträge (28 Etappen + 10 Varianten):
+- Hauptetappen (type: "stage"): 1-28
+- Alternative Routen (type: "alternative"): 01bis, 05bis, 12bis
+- Stadtrundgänge (type: "urban"): 02bis, 05bis2, 15bis, 25bis, 28bis
+- Spezial (type: "special"): 16bis (Visioguide)
+- Regional (type: "regional"): Regionale Routen
+
+ANPASSUNGEN:
+- Farben der Punkte: Werte im CSS ändern (typeColors)
+- Größe der Punkte: Wert 'r' im JavaScript ändern (Zeile mit setAttribute('r', '10'))
+- Größe der Regional-Buttons: width/height des rect ändern
+- Stil des Tooltips: .via-tooltip im CSS ändern
+- Transparenz: opacity im CSS ändern (aktuell 0.5)
+-->
