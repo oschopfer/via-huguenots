@@ -725,8 +725,8 @@
         function updateTooltipPosition(e) {
             const x = e.clientX;
             const y = e.clientY;
-            tooltip.style.left = (x + 15) + 'px';
-            tooltip.style.top = (y - 10) + 'px';
+            tooltip.style.left = (x + 10) + 'px';
+            tooltip.style.top = (y - 5) + 'px';
         }
     }
 })();
