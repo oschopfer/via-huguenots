@@ -1,21 +1,310 @@
-/**
- * Via Huguenots - Carte Interactive
- * Script pour afficher une carte interactive avec marqueurs cliquables
- */
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte Interactive - Via Huguenots</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-(function() {
-    // Configuration des couleurs par type
-    const typeColors = {
-        'stage': '#ff6b6b',
-        'alternative': '#FF9800',
-        'urban': '#2196F3',
-        'special': '#9C27B0',
-        'regional': '#4CAF50'
-    };
+        body {
+            font-family: 'Open Sans', Arial, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
 
-    // Données des étapes (embarquées pour éviter les problèmes de sécurité et CORS)
-    const stages = [
-        {
+        .map-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #5d9ace;
+            font-family: 'Oswald', sans-serif;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .interactive-map {
+            position: relative;
+            width: 100%;
+            max-width: 1170px;
+            margin: 0 auto;
+        }
+
+        .interactive-map img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .interactive-map svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .stage-marker {
+            pointer-events: all;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Type-specific colors with transparency */
+        .stage-marker.stage circle {
+            fill: #ff6b6b;
+            stroke: white;
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .stage-marker.alternative circle {
+            fill: #FF9800;
+            stroke: white;
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .stage-marker.urban circle {
+            fill: #2196F3;
+            stroke: white;
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .stage-marker.special circle {
+            fill: #9C27B0;
+            stroke: white;
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .stage-marker.regional rect {
+            fill: #4CAF50;
+            stroke: white;
+            stroke-width: 2;
+            opacity: 0.5;
+        }
+
+        .stage-marker:hover circle,
+        .stage-marker:hover rect {
+            opacity: 0.8;
+        }
+
+        .stage-marker text {
+            fill: white;
+            font-size: 10px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+            pointer-events: none;
+        }
+
+        .connection-line {
+            stroke-width: 2;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            font-size: 14px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1000;
+            max-width: 300px;
+            white-space: nowrap;
+        }
+
+        .tooltip.show {
+            opacity: 1;
+        }
+
+        .tooltip .stage-name {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .tooltip .stage-name.stage {
+            color: #ff6b6b;
+        }
+
+        .tooltip .stage-name.alternative {
+            color: #FF9800;
+        }
+
+        .tooltip .stage-name.urban {
+            color: #2196F3;
+        }
+
+        .tooltip .stage-name.special {
+            color: #9C27B0;
+        }
+
+        .tooltip .stage-name.regional {
+            color: #4CAF50;
+        }
+
+        .tooltip .stage-distance {
+            font-size: 12px;
+            color: #ccc;
+        }
+
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .legend h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            margin: 5px 15px 5px 0;
+        }
+
+        .legend-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .legend-rect {
+            width: 18px;
+            height: 12px;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+
+        .legend-stage {
+            background-color: #ff6b6b;
+        }
+
+        .legend-alternative {
+            background-color: #FF9800;
+        }
+
+        .legend-urban {
+            background-color: #2196F3;
+        }
+
+        .legend-special {
+            background-color: #9C27B0;
+        }
+
+        .legend-regional {
+            background-color: #4CAF50;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .map-container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .stage-marker text {
+                font-size: 10px;
+            }
+
+            .tooltip {
+                font-size: 12px;
+                padding: 8px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="map-container">
+        <h1>Carte Interactive - Via Huguenots en Suisse</h1>
+        
+        <div class="interactive-map" id="mapContainer">
+            <img src="map_chemin_layer.jpg" alt="Carte Via Huguenots" id="mapImage">
+            <svg id="mapSvg" viewBox="0 0 1170 705" preserveAspectRatio="xMidYMid meet">
+                <!-- Les marqueurs seront ajoutés ici par JavaScript -->
+            </svg>
+        </div>
+
+        <div class="tooltip" id="tooltip">
+            <span class="stage-name"></span>
+            <span class="stage-distance"></span>
+        </div>
+
+        <div class="legend">
+            <h3>Légende</h3>
+            <div class="legend-item">
+                <div class="legend-dot legend-stage"></div>
+                <span>Étapes</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-alternative"></div>
+                <span>Alternatives</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-urban"></div>
+                <span>Urbains</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-dot legend-special"></div>
+                <span>Spéciaux</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-rect legend-regional"></div>
+                <span>Régionaux</span>
+            </div>
+            <p style="margin-top: 10px; font-style: italic; color: #666;">
+                Cliquez sur un point pour accéder aux détails de l'étape
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Configuration des couleurs par type
+        const typeColors = {
+            'stage': '#ff6b6b',
+            'alternative': '#FF9800',
+            'urban': '#2196F3',
+            'special': '#9C27B0',
+            'regional': '#4CAF50'
+        };
+
+        // Données embarquées directement (évite le problème CORS en local)
+        const stages = [
+            [
+              {
                 "id": "1",
                 "name_short": "chancygeneveplain",
                 "latitude": 46.130329087376595,
@@ -30,8 +319,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "01bis",
                 "name_short": "01_bis",
                 "latitude": 46.198167,
@@ -46,8 +335,8 @@
                 "name_full_de": "Charrot - Genf Plainpalais",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/1-2-charrot-plainpalais-2",
                 "type": "alternative"
-        },
-        {
+              },
+              {
                 "id": "2",
                 "name_short": "geneveplainpalaisversoix",
                 "latitude": 46.198167082388,
@@ -62,8 +351,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "02bis",
                 "name_short": "02_bis",
                 "latitude": 46.198167,
@@ -78,8 +367,8 @@
                 "name_full_de": "Stadtrundgang Genf",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/02bis-stadtrundgang-genf",
                 "type": "urban"
-        },
-        {
+              },
+              {
                 "id": "3",
                 "name_short": "versoixnyon",
                 "latitude": 46.27983708400279,
@@ -94,8 +383,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "4",
                 "name_short": "nyonrolle",
                 "latitude": 46.38448147615418,
@@ -110,8 +399,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "5",
                 "name_short": "rollemorges",
                 "latitude": 46.46280612726696,
@@ -126,8 +415,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "05bis",
                 "name_short": "05_bis",
                 "latitude": 46.510859,
@@ -137,13 +426,13 @@
                 "distance": "97.3 km",
                 "name_full_fr": "Morges - Morat",
                 "url_fr": "https://www.via-huguenots.ch/fr/le-chemin/en-suisse/itineraires-suissemobile/2-4-1-morges-morat",
-                "offset_distance": 50,
-                "offset_angle": 310,
+                "offset_distance": 80,
+                "offset_angle": 90,
                 "name_full_de": "Morges - Murten",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/2-4-1-morges-morat-2",
                 "type": "alternative"
-        },
-        {
+              },
+              {
                 "id": "05bis2",
                 "name_short": "05_bis2",
                 "latitude": 46.52,
@@ -158,8 +447,8 @@
                 "name_full_de": "Stadtrundgang Lausanne",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/5bis2-stadtrundgang-lausanne",
                 "type": "urban"
-        },
-        {
+              },
+              {
                 "id": "6",
                 "name_short": "morgescossonay",
                 "latitude": 46.51085947663523,
@@ -174,8 +463,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "7",
                 "name_short": "cossonayromainmotier",
                 "latitude": 46.60604091058485,
@@ -190,8 +479,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "8",
                 "name_short": "romainmotierorbe",
                 "latitude": 46.6936423562001,
@@ -206,8 +495,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "9",
                 "name_short": "orbeyverdonlesbains",
                 "latitude": 46.724213707028,
@@ -222,8 +511,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "10",
                 "name_short": "yverdonlesbainsstaubin",
                 "latitude": 46.781529447995126,
@@ -238,8 +527,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "11",
                 "name_short": "staubinneuchatel",
                 "latitude": 46.89846186363138,
@@ -254,8 +543,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "12",
                 "name_short": "neuchatelins",
                 "latitude": 46.9963774788193,
@@ -270,8 +559,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "12bis",
                 "name_short": "12_bis",
                 "latitude": 46.996377,
@@ -286,8 +575,8 @@
                 "name_full_de": "Neuchâtel - Büren an der Aare",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/12bis-neuchatel-bueren-de",
                 "type": "alternative"
-        },
-        {
+              },
+              {
                 "id": "13",
                 "name_short": "insgummenen",
                 "latitude": 46.999972310848534,
@@ -302,8 +591,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "14",
                 "name_short": "gummenenbern",
                 "latitude": 46.94183011353016,
@@ -318,8 +607,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "15",
                 "name_short": "bernaarberg",
                 "latitude": 46.9484011190943,
@@ -334,8 +623,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "15bis",
                 "name_short": "15_bis",
                 "latitude": 46.948401,
@@ -350,8 +639,8 @@
                 "name_full_de": "Stadtrundgang Bern",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/stadtrundgang-bern",
                 "type": "urban"
-        },
-        {
+              },
+              {
                 "id": "16",
                 "name_short": "aarbergburenanderaare",
                 "latitude": 47.044628420844674,
@@ -366,8 +655,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "16bis",
                 "name_short": "16_bis",
                 "latitude": 47.138171,
@@ -382,8 +671,8 @@
                 "name_full_de": "Visioguide «Naufrage 05.09.1687»",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/visioguide-naufrage-05-09-1687",
                 "type": "special"
-        },
-        {
+              },
+              {
                 "id": "17",
                 "name_short": "burenanderaaresolothurn",
                 "latitude": 47.13817131659016,
@@ -398,8 +687,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "18",
                 "name_short": "solothurnaarwangen",
                 "latitude": 47.204430018085986,
@@ -414,8 +703,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "19",
                 "name_short": "aarwangenzofingen",
                 "latitude": 47.245241205440834,
@@ -430,8 +719,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "20",
                 "name_short": "zofingenaarau",
                 "latitude": 47.28842258476652,
@@ -446,8 +735,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "21",
                 "name_short": "aaraulenzburg",
                 "latitude": 47.39093809016049,
@@ -462,8 +751,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "22",
                 "name_short": "lenzburgbrugg",
                 "latitude": 47.39094884414226,
@@ -478,8 +767,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "23",
                 "name_short": "bruggbaden",
                 "latitude": 47.48141000443138,
@@ -494,8 +783,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "24",
                 "name_short": "badenzurich",
                 "latitude": 47.476408092770725,
@@ -510,8 +799,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "25",
                 "name_short": "zurichkloten",
                 "latitude": 47.37874109833501,
@@ -526,8 +815,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "25bis",
                 "name_short": "25_bis",
                 "latitude": 47.476408,
@@ -542,8 +831,8 @@
                 "name_full_de": "Stadtrundgang Zürich",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/24bis-stadtrundgang-zuerich",
                 "type": "urban"
-        },
-        {
+              },
+              {
                 "id": "26",
                 "name_short": "kloteneglisau",
                 "latitude": 47.44859810988419,
@@ -558,8 +847,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "27",
                 "name_short": "eglisauschaffhausen",
                 "latitude": 47.5728960915003,
@@ -574,8 +863,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "28",
                 "name_short": "schaffhausenbarzheim",
                 "latitude": 47.69760310323909,
@@ -590,8 +879,8 @@
                 "offset_distance": 0,
                 "offset_angle": 0,
                 "type": "stage"
-        },
-        {
+              },
+              {
                 "id": "28bis",
                 "name_short": "28_bis",
                 "latitude": 47.697603,
@@ -606,8 +895,8 @@
                 "name_full_de": "Stadtrundgang Schaffhausen",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/28bis-stadtrundgang-schaffhausen",
                 "type": "urban"
-        },
-        {
+              },
+              {
                 "id": "regional",
                 "name_short": "regional",
                 "latitude": 47.558395,
@@ -622,111 +911,120 @@
                 "name_full_de": "Regionale Routen",
                 "url_de": "https://www.via-huguenots.ch/de/der-weg/in-der-schweiz/schweizmobil-strecken/regionale-routen",
                 "type": "regional"
-        }
-];
+              }
+            ]        ];
 
-    // Initialiser la carte directement avec les données embarquées
-    initMap(stages);
+        // Initialiser la carte directement
+        initMap(stages);
 
-    function initMap(stages) {
-        const svg = document.getElementById('viaMapSvg');
-        const tooltip = document.getElementById('viaTooltip');
+        function initMap(stages) {
+            const svg = document.getElementById('mapSvg');
+            const tooltip = document.getElementById('tooltip');
 
-        if (!svg || !tooltip) return;
+            if (!svg || !tooltip) return;
 
-        // Calculer la position d'affichage du marqueur (avec offset si nécessaire)
-        function calculateMarkerPosition(stage) {
-            if (!stage.offset_distance || stage.offset_distance === 0) {
-                return { x: stage.x, y: stage.y };
+            // Calculer la position d'affichage du marqueur (avec offset si nécessaire)
+            function calculateMarkerPosition(stage) {
+                if (!stage.offset_distance || stage.offset_distance === 0) {
+                    return { x: stage.x, y: stage.y };
+                }
+                const angleRad = (stage.offset_angle || 0) * Math.PI / 180;
+                const offsetX = stage.offset_distance * Math.cos(angleRad);
+                const offsetY = -stage.offset_distance * Math.sin(angleRad);
+                return {
+                    x: stage.x + offsetX,
+                    y: stage.y + offsetY
+                };
             }
-            const angleRad = (stage.offset_angle || 0) * Math.PI / 180;
-            const offsetX = stage.offset_distance * Math.cos(angleRad);
-            const offsetY = -stage.offset_distance * Math.sin(angleRad);
-            return {
-                x: stage.x + offsetX,
-                y: stage.y + offsetY
-            };
-        }
 
-        // Créer les lignes de connexion pour les marqueurs avec offset
-        stages.forEach((stage) => {
-            if (stage.offset_distance && stage.offset_distance > 0) {
+            // Créer les lignes de connexion pour les marqueurs avec offset
+            stages.forEach((stage) => {
+                if (stage.offset_distance && stage.offset_distance > 0) {
+                    const markerPos = calculateMarkerPosition(stage);
+                    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+                    line.classList.add('connection-line');
+                    line.setAttribute('x1', stage.x);
+                    line.setAttribute('y1', stage.y);
+                    line.setAttribute('x2', markerPos.x);
+                    line.setAttribute('y2', markerPos.y);
+                    line.setAttribute('stroke', typeColors[stage.type] || '#999');
+                    svg.appendChild(line);
+                }
+            });
+
+            // Créer les marqueurs pour chaque étape
+            stages.forEach((stage) => {
                 const markerPos = calculateMarkerPosition(stage);
-                const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-                line.classList.add('via-connection-line');
-                line.setAttribute('x1', stage.x);
-                line.setAttribute('y1', stage.y);
-                line.setAttribute('x2', markerPos.x);
-                line.setAttribute('y2', markerPos.y);
-                line.setAttribute('stroke', typeColors[stage.type] || '#999');
-                svg.appendChild(line);
+                const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+                group.classList.add('stage-marker', stage.type);
+                group.setAttribute('data-stage-id', stage.id);
+
+                // Créer un rectangle pour les routes régionales, un cercle pour les autres
+                if (stage.type === 'regional') {
+                    const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                    rect.setAttribute('x', markerPos.x - 25);
+                    rect.setAttribute('y', markerPos.y - 10);
+                    rect.setAttribute('width', '50');
+                    rect.setAttribute('height', '20');
+                    rect.setAttribute('rx', '3');
+                    group.appendChild(rect);
+
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', markerPos.x);
+                    text.setAttribute('y', markerPos.y);
+                    text.textContent = 'REG';
+                    group.appendChild(text);
+                } else {
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', markerPos.x);
+                    circle.setAttribute('cy', markerPos.y);
+                    circle.setAttribute('r', '10');
+                    group.appendChild(circle);
+
+                    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+                    text.setAttribute('x', markerPos.x);
+                    text.setAttribute('y', markerPos.y);
+                    text.textContent = stage.id;
+                    group.appendChild(text);
+                }
+
+                svg.appendChild(group);
+
+                // Événements
+                group.addEventListener('click', () => {
+                    window.location.href = stage.url_fr;
+                });
+
+                group.addEventListener('mouseenter', (e) => {
+                    const nameSpan = tooltip.querySelector('.stage-name');
+                    nameSpan.textContent = stage.name_full_fr;
+                    nameSpan.className = 'stage-name ' + stage.type;
+                    tooltip.querySelector('.stage-distance').textContent = stage.distance || '';
+                    tooltip.classList.add('show');
+                    updateTooltipPosition(e);
+                });
+
+                group.addEventListener('mousemove', updateTooltipPosition);
+
+                group.addEventListener('mouseleave', () => {
+                    tooltip.classList.remove('show');
+                });
+            });
+
+            function updateTooltipPosition(e) {
+                const x = e.clientX;
+                const y = e.clientY;
+                tooltip.style.left = (x + 15) + 'px';
+                tooltip.style.top = (y - 10) + 'px';
             }
-        });
 
-        // Créer les marqueurs
-        stages.forEach((stage) => {
-            const markerPos = calculateMarkerPosition(stage);
-            const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            group.classList.add('via-stage-marker', stage.type);
-            group.setAttribute('data-stage-id', stage.id);
-
-            // Créer un rectangle pour les routes régionales, un cercle pour les autres
-            if (stage.type === 'regional') {
-                const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                rect.setAttribute('x', markerPos.x - 25);
-                rect.setAttribute('y', markerPos.y - 10);
-                rect.setAttribute('width', '100');
-                rect.setAttribute('height', '30');
-                rect.setAttribute('rx', '3');
-                group.appendChild(rect);
-
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', markerPos.x);
-                text.setAttribute('y', markerPos.y);
-                text.textContent = 'Regional';
-                group.appendChild(text);
-            } else {
-                const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-                circle.setAttribute('cx', markerPos.x);
-                circle.setAttribute('cy', markerPos.y);
-                circle.setAttribute('r', '15');
-                group.appendChild(circle);
-
-                const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-                text.setAttribute('x', markerPos.x);
-                text.setAttribute('y', markerPos.y);
-                text.textContent = stage.id;
-                group.appendChild(text);
-            }
-
-            svg.appendChild(group);
-
-            // Événements
-            group.addEventListener('click', function() {
-                window.location.href = stage.url_fr;
+            // Responsive: ajuster le SVG quand l'image change de taille
+            window.addEventListener('resize', () => {
+                const img = document.getElementById('mapImage');
+                const svg = document.getElementById('mapSvg');
+                svg.setAttribute('viewBox', `0 0 1170 705`);
             });
-
-            group.addEventListener('mouseenter', function(e) {
-                const nameSpan = tooltip.querySelector('.stage-name');
-                nameSpan.textContent = stage.name_full_fr;
-                nameSpan.className = 'stage-name ' + stage.type;
-                tooltip.querySelector('.stage-distance').textContent = stage.distance || '';
-                tooltip.classList.add('show');
-                updateTooltipPosition(e);
-            });
-
-            group.addEventListener('mousemove', updateTooltipPosition);
-
-            group.addEventListener('mouseleave', function() {
-                tooltip.classList.remove('show');
-            });
-        });
-
-        function updateTooltipPosition(e) {
-            const x = e.clientX;
-            const y = e.clientY;
-            tooltip.style.left = (x + 10) + 'px';
-            tooltip.style.top = (y - 5) + 'px';
         }
-    }
-})();
+    </script>
+</body>
+</html>
