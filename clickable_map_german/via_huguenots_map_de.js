@@ -675,21 +675,21 @@
                 const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
                 rect.setAttribute('x', markerPos.x - 25);
                 rect.setAttribute('y', markerPos.y - 10);
-                rect.setAttribute('width', '50');
-                rect.setAttribute('height', '20');
+                rect.setAttribute('width', '100');
+                rect.setAttribute('height', '30');
                 rect.setAttribute('rx', '3');
                 group.appendChild(rect);
 
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
                 text.setAttribute('x', markerPos.x);
                 text.setAttribute('y', markerPos.y);
-                text.textContent = 'REG';
+                text.textContent = 'Regional';
                 group.appendChild(text);
             } else {
                 const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
                 circle.setAttribute('cx', markerPos.x);
                 circle.setAttribute('cy', markerPos.y);
-                circle.setAttribute('r', '10');
+                circle.setAttribute('r', '15');
                 group.appendChild(circle);
 
                 const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
