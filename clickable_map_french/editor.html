@@ -156,6 +156,12 @@
             font-size: 12px;
             white-space: nowrap;
             pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .marker:hover .marker-label,
+        .marker.selected .marker-label {
             opacity: 1;
         }
 
