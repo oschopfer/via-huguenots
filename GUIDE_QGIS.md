@@ -55,45 +55,72 @@ Vous devriez maintenant voir toutes les communes suisses colorées sur la carte 
 6. Nommez-le `chemin_huguenot_complet.gpkg`
 7. Cliquez sur **Exécuter**
 
-### Étape 5 : Créer une zone tampon autour du chemin
+### Étape 5 : Reprojeter dans le système de coordonnées suisse (LV95)
 
-Les tracés GPX sont des lignes fines. Pour capturer toutes les communes traversées, on crée une "zone tampon" de quelques mètres :
+**Important !** Les fichiers GPX utilisent des degrés, mais pour créer un tampon en mètres, il faut utiliser le système suisse LV95 :
+
+1. Clic droit sur la couche `chemin_huguenot_complet`
+2. Sélectionnez **Exporter** → **Sauvegarder les entités sous...**
+3. Format : **GeoPackage**
+4. Nom du fichier : `chemin_huguenot_LV95.gpkg`
+5. **SCR (Système de Coordonnées de Référence)** : Cliquez sur l'icône 🌐 à droite
+6. Dans la recherche, tapez : **2056**
+7. Sélectionnez **EPSG:2056 - CH1903+ / LV95** (le système officiel suisse)
+8. Cliquez sur **OK**, puis **OK** à nouveau
+
+Votre tracé est maintenant en coordonnées suisses avec des mètres !
+
+### Étape 6 : Créer une zone tampon autour du chemin
+
+Les tracés GPX sont des lignes fines. Pour capturer toutes les communes traversées (y compris voisines), on crée une "zone tampon" :
 
 1. Menu **Vecteur** → **Géotraitement** → **Tampon**
-2. Couche en entrée : `chemin_huguenot_complet`
-3. Distance : `50` (mètres - pour capturer les communes proches du tracé)
-4. Sous "Tampon", cliquez sur **...** → **Enregistrer dans un fichier**
-5. Nommez-le `chemin_huguenot_buffer.gpkg`
-6. Cliquez sur **Exécuter**
+2. Couche en entrée : `chemin_huguenot_LV95` (celle que vous venez de créer)
+3. Distance : **`300`** (mètres - pour capturer aussi les communes voisines proches)
+   - Vous pouvez augmenter à 500 ou 1000 si vous voulez un tampon encore plus large
+4. Segments : laissez 5 (par défaut)
+5. Sous "Tampon", cliquez sur **...** → **Enregistrer dans un fichier**
+6. Nommez-le `chemin_huguenot_buffer.gpkg`
+7. Cliquez sur **Exécuter**
 
-### Étape 6 : Identifier les communes traversées
+Vous verrez une bande large autour du chemin - toutes les communes qui touchent cette bande seront identifiées !
+
+### Étape 7 : Identifier les communes traversées
 
 1. Menu **Vecteur** → **Outils d'analyse** → **Intersection**
-2. Couche en entrée : votre couche des **communes suisses**
+2. Couche en entrée : votre couche des **communes suisses** (`tlm_hoheitsgebiet_gemeinde`)
 3. Couche de recouvrement : `chemin_huguenot_buffer`
 4. Sous "Intersection", cliquez sur **...** → **Enregistrer dans un fichier**
 5. Nommez-le `communes_traversees.gpkg`
 6. Cliquez sur **Exécuter**
 
-### Étape 7 : Exporter la liste des communes
+Bravo ! Vous avez maintenant la liste complète des communes traversées.
+
+### Étape 8 : Exporter la liste des communes
 
 1. Faites un clic droit sur la couche `communes_traversees`
 2. Sélectionnez **Ouvrir la table d'attributs**
-3. Vous verrez toutes les communes traversées !
+3. Vous verrez toutes les communes traversées avec leurs informations !
 4. Pour exporter en CSV :
    - Clic droit sur `communes_traversees` → **Exporter** → **Sauvegarder les entités sous**
    - Format : **CSV**
    - Nom du fichier : `liste_communes_huguenot.csv`
    - Cliquez sur **OK**
 
-### Étape 8 : Nettoyer la liste
+### Étape 9 : Nettoyer la liste
 
 Ouvrez le CSV dans Excel/LibreOffice et vous verrez les colonnes :
 - `NAME` ou `GEMNAME` = Nom de la commune
 - `KANTON` ou `KT` = Canton
-- `BFS_NUMMER` = Numéro OFS de la commune
+- `BFS_NUMMER` ou `BFS_NR` = Numéro OFS de la commune
+- `ICC` = Code commune (optionnel)
 
-Triez par canton et par nom pour avoir une belle liste !
+**Pour nettoyer :**
+1. Supprimez les colonnes inutiles (gardez juste : nom, canton, numéro OFS)
+2. Triez par canton puis par nom alphabétique
+3. Supprimez les doublons éventuels (sélectionnez tout → Données → Supprimer les doublons)
+
+Vous avez votre liste finale ! 🎉
 
 ---
 
@@ -129,13 +156,20 @@ Si QGIS vous semble trop complexe, vous pouvez utiliser un service en ligne :
 **Q : Je ne vois pas les menus "Vecteur" ?**
 - Ils sont peut-être dans **Processing** → **Toolbox** → cherchez les outils par nom
 
-**Q : La connexion WFS ne fonctionne pas ?**
-- Utilisez l'option B (téléchargement manuel)
-- Les données swissBOUNDARIES3D sont disponibles gratuitement
+**Q : Le tampon me demande une distance en degrés, pas en mètres ?**
+- C'est normal ! Les fichiers GPX utilisent des coordonnées géographiques (degrés)
+- Suivez l'étape 5 pour reprojeter dans le système suisse LV95 (EPSG:2056)
+- Après la reprojection, le tampon fonctionnera en mètres
+
+**Q : Quelle distance de tampon choisir ?**
+- **100-300m** : communes directement traversées
+- **500-1000m** : inclut les communes voisines proches
+- Vous pouvez expérimenter avec différentes valeurs et comparer les résultats !
 
 **Q : Combien de communes devrais-je trouver ?**
 - La liste partielle en contient 31 (points de départ/arrivée)
-- Avec l'analyse complète, vous devriez en trouver entre 50 et 150 selon la granularité
+- Avec l'analyse complète et un tampon de 300m : entre 80 et 150 communes
+- Avec un tampon de 1000m : encore plus (incluant beaucoup de voisines)
 
 ---
 
