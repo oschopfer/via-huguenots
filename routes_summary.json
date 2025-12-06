@@ -1,0 +1,450 @@
+[
+  {
+    "file": "036AZurich-Winterthur-SteinaRh-SH.gpx",
+    "name": "036A Zürich-Winterthur-Stein aRh-SH",
+    "points_count": 4777,
+    "sampled_count": 56,
+    "start": [
+      47.69561269227415,
+      8.640653303824365
+    ],
+    "end": [
+      47.41297388635576,
+      8.591734825633466
+    ]
+  },
+  {
+    "file": "036BWinterthur-Elgg.gpx",
+    "name": "036B Winterthur-Elgg",
+    "points_count": 937,
+    "sampled_count": 13,
+    "start": [
+      47.49954310664907,
+      8.723981091286987
+    ],
+    "end": [
+      47.48971412330866,
+      8.866862109396607
+    ]
+  },
+  {
+    "file": "12bisNeuchatelBueren.gpx",
+    "name": "12bis Neuchâtel - Büren",
+    "points_count": 3590,
+    "sampled_count": 42,
+    "start": [
+      46.99640811327845,
+      6.936024066992104
+    ],
+    "end": [
+      47.13836210500449,
+      7.371253074146807
+    ]
+  },
+  {
+    "file": "wf01chancygeneveplain.gpx",
+    "name": "WF 01 Chancy - Genève Plain...",
+    "points_count": 3122,
+    "sampled_count": 21,
+    "start": [
+      46.130329087376595,
+      5.964801048627123
+    ],
+    "end": [
+      46.19814208429307,
+      6.14301705150865
+    ]
+  },
+  {
+    "file": "wf02geneveplainpalaisversoix.gpx",
+    "name": "WF 02 Genève Plainpalais - Versoix",
+    "points_count": 821,
+    "sampled_count": 11,
+    "start": [
+      46.198167082387954,
+      6.143019047332928
+    ],
+    "end": [
+      46.2796150832437,
+      6.165330050047487
+    ]
+  },
+  {
+    "file": "wf03versoixnyon.gpx",
+    "name": "WF 03 Versoix - Nyon",
+    "points_count": 1854,
+    "sampled_count": 20,
+    "start": [
+      46.27983708400279,
+      6.165978052187711
+    ],
+    "end": [
+      46.384481087559834,
+      6.236414059763774
+    ]
+  },
+  {
+    "file": "wf04nyonrolle.gpx",
+    "name": "WF 04 Nyon - Rolle",
+    "points_count": 1859,
+    "sampled_count": 18,
+    "start": [
+      46.38448147615418,
+      6.236416768282652
+    ],
+    "end": [
+      46.46281804819591,
+      6.336865604156628
+    ]
+  },
+  {
+    "file": "wf05bismorgesmurten.gpx",
+    "name": "05bis Morges - Murten",
+    "points_count": 7558,
+    "sampled_count": 79,
+    "start": [
+      46.50939108617604,
+      6.499654052313417
+    ],
+    "end": [
+      46.92729710508138,
+      7.114135075360537
+    ]
+  },
+  {
+    "file": "wf05rollemorges.gpx",
+    "name": "WF 05 Rolle - Morges",
+    "points_count": 1081,
+    "sampled_count": 19,
+    "start": [
+      46.46280612726696,
+      6.336842412594706
+    ],
+    "end": [
+      46.51086478680372,
+      6.493535159155726
+    ]
+  },
+  {
+    "file": "wf06morgescossonay.gpx",
+    "name": "WF 06 Morges - Cossonay",
+    "points_count": 1199,
+    "sampled_count": 17,
+    "start": [
+      46.51085947663523,
+      6.4935456761159
+    ],
+    "end": [
+      46.60580278025009,
+      6.523628516355529
+    ]
+  },
+  {
+    "file": "wf07cossonayromainmotier.gpx",
+    "name": "WF 07 Cossonay - Romainmôtier",
+    "points_count": 1517,
+    "sampled_count": 20,
+    "start": [
+      46.60604091058485,
+      6.5234835057053715
+    ],
+    "end": [
+      46.69366245926358,
+      6.460738076129928
+    ]
+  },
+  {
+    "file": "wf08romainmotierorbe.gpx",
+    "name": "WF 08 Romainmôtier - Orbe",
+    "points_count": 1362,
+    "sampled_count": 10,
+    "start": [
+      46.693642356200144,
+      6.460701832314953
+    ],
+    "end": [
+      46.72422631038353,
+      6.53052659961395
+    ]
+  },
+  {
+    "file": "wf09orbeyverdonlesbains.gpx",
+    "name": "WF 09 Orbe - Yverdon-les-Bains",
+    "points_count": 1519,
+    "sampled_count": 17,
+    "start": [
+      46.72421370702796,
+      6.530525504145771
+    ],
+    "end": [
+      46.7810827975627,
+      6.640614915173501
+    ]
+  },
+  {
+    "file": "wf10yverdonlesbainsstaubin.gpx",
+    "name": "WF 10 Yverdon-les-Bains - St-Aubin",
+    "points_count": 1489,
+    "sampled_count": 20,
+    "start": [
+      46.781529447995126,
+      6.640936984913424
+    ],
+    "end": [
+      46.8990265422035,
+      6.781240671407431
+    ]
+  },
+  {
+    "file": "wf11staubinneuchatel.gpx",
+    "name": "WF 11 St-Aubin - Neuchâtel",
+    "points_count": 1707,
+    "sampled_count": 18,
+    "start": [
+      46.89846186363138,
+      6.78128302260302
+    ],
+    "end": [
+      46.99641575431451,
+      6.936045452021062
+    ]
+  },
+  {
+    "file": "wf12neuchatelins.gpx",
+    "name": "WF 12 Neuchâtel - Ins",
+    "points_count": 1052,
+    "sampled_count": 15,
+    "start": [
+      46.99637747881934,
+      6.935932743130252
+    ],
+    "end": [
+      46.99995351489633,
+      7.099829292856157
+    ]
+  },
+  {
+    "file": "wf13insgummenen.gpx",
+    "name": "WF 13 Ins - Gümmenen",
+    "points_count": 1608,
+    "sampled_count": 20,
+    "start": [
+      46.999972310848534,
+      7.099797618109733
+    ],
+    "end": [
+      46.94202523725107,
+      7.234391011297703
+    ]
+  },
+  {
+    "file": "wf14gummenenbern.gpx",
+    "name": "WF 14 Gümmenen - Bern",
+    "points_count": 1487,
+    "sampled_count": 19,
+    "start": [
+      46.94183011353016,
+      7.234582080272958
+    ],
+    "end": [
+      46.94840612029657,
+      7.440251087537035
+    ]
+  },
+  {
+    "file": "wf15bernaarberg.gpx",
+    "name": "WF 15 Bern - Aarberg",
+    "points_count": 1412,
+    "sampled_count": 21,
+    "start": [
+      46.94840111909434,
+      7.440226090839133
+    ],
+    "end": [
+      47.04465510090813,
+      7.2784850732423365
+    ]
+  },
+  {
+    "file": "wf16aarbergburenanderaare.gpx",
+    "name": "WF 16 Aarberg - Büren an der Aare",
+    "points_count": 2174,
+    "sampled_count": 18,
+    "start": [
+      47.044628420844674,
+      7.278465348994359
+    ],
+    "end": [
+      47.138304389081895,
+      7.371168479323387
+    ]
+  },
+  {
+    "file": "wf17burenanderaaresolothurn.gpx",
+    "name": "WF 17 Büren an der Aare - Solothurn",
+    "points_count": 1397,
+    "sampled_count": 18,
+    "start": [
+      47.13817131659016,
+      7.371254333062097
+    ],
+    "end": [
+      47.20432654954493,
+      7.5432621070649475
+    ]
+  },
+  {
+    "file": "wf18solothurnaarwangen.gpx",
+    "name": "WF 18 Solothurn - Aarwangen",
+    "points_count": 1580,
+    "sampled_count": 20,
+    "start": [
+      47.204430018085986,
+      7.543229311704636
+    ],
+    "end": [
+      47.24529525777325,
+      7.763639311306179
+    ]
+  },
+  {
+    "file": "wf19aarwangenzofingen.gpx",
+    "name": "WF 19 Aarwangen - Zofingen",
+    "points_count": 993,
+    "sampled_count": 18,
+    "start": [
+      47.245241205440834,
+      7.763669362990186
+    ],
+    "end": [
+      47.28822217392735,
+      7.942974300822243
+    ]
+  },
+  {
+    "file": "wf20zofingenaarau.gpx",
+    "name": "WF 20 Zofingen - Aarau",
+    "points_count": 1904,
+    "sampled_count": 16,
+    "start": [
+      47.28842258476652,
+      7.94363055517897
+    ],
+    "end": [
+      47.39095902000554,
+      8.052314742933959
+    ]
+  },
+  {
+    "file": "wf21aaraulenzburg.gpx",
+    "name": "WF 21 Aarau - Lenzburg",
+    "points_count": 720,
+    "sampled_count": 14,
+    "start": [
+      47.39093809016049,
+      8.052318064961582
+    ],
+    "end": [
+      47.390973093919456,
+      8.170240080915391
+    ]
+  },
+  {
+    "file": "wf22lenzburgbrugg.gpx",
+    "name": "WF 22 Lenzburg - Brugg",
+    "points_count": 1771,
+    "sampled_count": 15,
+    "start": [
+      47.39094884414226,
+      8.17031545797363
+    ],
+    "end": [
+      47.481018907856196,
+      8.208554732147604
+    ]
+  },
+  {
+    "file": "wf23bruggbaden.gpx",
+    "name": "WF 23 Brugg - Baden",
+    "points_count": 895,
+    "sampled_count": 11,
+    "start": [
+      47.48141000443138,
+      8.210604961961508
+    ],
+    "end": [
+      47.476395344827324,
+      8.30796783277765
+    ]
+  },
+  {
+    "file": "wf24badenzurich.gpx",
+    "name": "WF 24 Baden - Zürich",
+    "points_count": 1917,
+    "sampled_count": 24,
+    "start": [
+      47.476408092770725,
+      8.307862079702318
+    ],
+    "end": [
+      47.37872109957971,
+      8.541490076575428
+    ]
+  },
+  {
+    "file": "wf25zurichkloten.gpx",
+    "name": "WF 25 Zürich - Kloten",
+    "points_count": 1243,
+    "sampled_count": 13,
+    "start": [
+      47.37874109833501,
+      8.541485073976219
+    ],
+    "end": [
+      47.44853910151869,
+      8.583626083098352
+    ]
+  },
+  {
+    "file": "wf26kloteneglisau.gpx",
+    "name": "WF 26 Kloten - Eglisau",
+    "points_count": 1423,
+    "sampled_count": 17,
+    "start": [
+      47.44859810988419,
+      8.583565081469715
+    ],
+    "end": [
+      47.57262209337205,
+      8.516273079905659
+    ]
+  },
+  {
+    "file": "wf27eglisauschaffhausen.gpx",
+    "name": "WF 27 Eglisau - Schaffhausen",
+    "points_count": 2349,
+    "sampled_count": 23,
+    "start": [
+      47.5728960915003,
+      8.516097081359476
+    ],
+    "end": [
+      47.6980631002225,
+      8.632962082978338
+    ]
+  },
+  {
+    "file": "wf28schaffhausenbarzheim.gpx",
+    "name": "WF 28 Schaffhausen - Barzheim",
+    "points_count": 933,
+    "sampled_count": 14,
+    "start": [
+      47.69760310323909,
+      8.63250808417797
+    ],
+    "end": [
+      47.764025122858584,
+      8.722325092647225
+    ]
+  }
+]
