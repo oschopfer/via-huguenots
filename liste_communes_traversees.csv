@@ -1,0 +1,307 @@
+﻿nom,canton,bfs,icc
+Aarau,AG,4001,CH
+Auenstein,AG,4091,CH
+Baden,AG,4021,CH
+Brugg,AG,4095,CH
+Ennetbaden,AG,4026,CH
+Gebenstorf,AG,4029,CH
+Gränichen,AG,4006,CH
+Habsburg,AG,4099,CH
+Hausen (AG),AG,4100,CH
+Holderbank (AG),AG,4199,CH
+Hunzenschwil,AG,4200,CH
+Killwangen,AG,4030,CH
+Kölliken,AG,4276,CH
+Lenzburg,AG,4201,CH
+Murgenthal,AG,4279,CH
+Möriken-Wildegg,AG,4203,CH
+Neuenhof,AG,4034,CH
+Niederlenz,AG,4204,CH
+Oberentfelden,AG,4010,CH
+Obersiggenthal,AG,4038,CH
+Oftringen,AG,4280,CH
+Rothrist,AG,4282,CH
+Safenwil,AG,4283,CH
+Schafisheim,AG,4207,CH
+Schinznach,AG,4125,CH
+Spreitenbach,AG,4040,CH
+Staufen,AG,4210,CH
+Strengelbach,AG,4285,CH
+Suhr,AG,4012,CH
+Unterentfelden,AG,4013,CH
+Untersiggenthal,AG,4044,CH
+Veltheim (AG),AG,4120,CH
+Villnachern,AG,4122,CH
+Vordemwald,AG,4287,CH
+Wettingen,AG,4045,CH
+Windisch,AG,4123,CH
+Würenlos,AG,4048,CH
+Zofingen,AG,4289,CH
+Aarberg,BE,301,CH
+Aarwangen,BE,321,CH
+Aegerten,BE,731,CH
+Arch,BE,381,CH
+Bannwil,BE,323,CH
+Berken,BE,972,CH
+Bern,BE,351,CH
+Biel/Bienne,BE,371,CH
+Bielersee (BE),BE,9149,CH
+Bremgarten bei Bern,BE,353,CH
+Brügg,BE,733,CH
+Büetigen,BE,382,CH
+Büren an der Aare,BE,383,CH
+Dotzigen,BE,386,CH
+Ferenbalm,BE,662,CH
+Frauenkappelen,BE,663,CH
+Gals,BE,494,CH
+Gampelen,BE,495,CH
+Graben,BE,976,CH
+Ins,BE,496,CH
+Kappelen,BE,305,CH
+Kirchlindach,BE,354,CH
+La Neuveville,BE,723,CH
+Lac de Neuchâtel (BE),BE,9152,CH
+Leuzigen,BE,388,CH
+Ligerz,BE,740,CH
+Lyss,BE,306,CH
+Meienried,BE,389,CH
+Meikirch,BE,307,CH
+Mühleberg,BE,668,CH
+Nidau,BE,743,CH
+Oberbipp,BE,983,CH
+Orpund,BE,744,CH
+Port,BE,745,CH
+Rüti bei Büren,BE,393,CH
+Safnern,BE,746,CH
+Scheuren,BE,747,CH
+Schwadernau,BE,748,CH
+Schwarzhäusern,BE,341,CH
+Seedorf (BE),BE,312,CH
+Studen (BE),BE,749,CH
+Twann-Tüscherz,BE,756,CH
+Walliswil bei Niederbipp,BE,990,CH
+Walliswil bei Wangen,BE,991,CH
+Wangen an der Aare,BE,992,CH
+Wiedlisbach,BE,995,CH
+Wohlen bei Bern,BE,360,CH
+Worben,BE,755,CH
+Wynau,BE,345,CH
+Belmont-Broye,FR,2053,CH
+Courgevaux,FR,2250,CH
+Courtepin,FR,2254,CH
+Fétigny,FR,2016,CH
+Greng,FR,2261,CH
+Meyriez,FR,2271,CH
+Mont-Vully,FR,2284,CH
+Montagny (FR),FR,2029,CH
+Muntelier,FR,2274,CH
+Murten,FR,2275,CH
+Surpierre,FR,2044,CH
+Ulmiz,FR,2278,CH
+Avully,GE,6603,CH
+Bellevue,GE,6606,CH
+Bernex,GE,6607,CH
+Carouge (GE),GE,6608,CH
+Cartigny,GE,6609,CH
+Chancy,GE,6611,CH
+Collex-Bossy,GE,6615,CH
+Confignon,GE,6618,CH
+Céligny,GE,6610,CH
+Genthod,GE,6622,CH
+Genève,GE,6621,CH
+Laconnex,GE,6627,CH
+Lancy,GE,6628,CH
+Onex,GE,6631,CH
+Perly-Certoux,GE,6632,CH
+Plan-les-Ouates,GE,6633,CH
+Pregny-Chambésy,GE,6634,CH
+Versoix,GE,6644,CH
+Bielersee (NE),NE,9150,CH
+Boudry,NE,6404,CH
+Cornaux,NE,6451,CH
+Cortaillod,NE,6408,CH
+Cressier (NE),NE,6452,CH
+La Grande Béroche,NE,6417,CH
+Lac de Neuchâtel (NE),NE,9155,CH
+Laténa,NE,6513,CH
+Le Landeron,NE,6455,CH
+Milvignes,NE,6416,CH
+Neuchâtel,NE,6458,CH
+Buchberg,SH,2933,CH
+Dörflingen,SH,2915,CH
+Hemishofen,SH,2962,CH
+Lohn (SH),SH,2917,CH
+Neuhausen am Rheinfall,SH,2937,CH
+Ramsen,SH,2963,CH
+Rüdlingen,SH,2938,CH
+Schaffhausen,SH,2939,CH
+Stein am Rhein,SH,2964,CH
+Stetten (SH),SH,2919,CH
+Thayngen,SH,2920,CH
+Bellach,SO,2542,CH
+Bettlach,SO,2543,CH
+Biberist,SO,2513,CH
+Deitingen,SO,2516,CH
+Eppenberg-Wöschnau,SO,2574,CH
+Feldbrunnen-St. Niklaus,SO,2544,CH
+Flumenthal,SO,2545,CH
+Fulenbach,SO,2575,CH
+Grenchen,SO,2546,CH
+Gretzenbach,SO,2576,CH
+Luterbach,SO,2527,CH
+Lüsslingen-Nennigkofen,SO,2464,CH
+Riedholz,SO,2554,CH
+Schönenwerd,SO,2583,CH
+Selzach,SO,2556,CH
+Solothurn,SO,2601,CH
+Walterswil (SO),SO,2585,CH
+Wolfwil,SO,2408,CH
+Zuchwil,SO,2534,CH
+Diessenhofen,TG,4545,CH
+Hüttwilen,TG,4821,CH
+Neunforn,TG,4601,CH
+Schlatt (TG),TG,4546,CH
+Uesslingen-Buch,TG,4616,CH
+Wagenhausen,TG,4871,CH
+Agiez,VD,5742,CH
+Aubonne,VD,5422,CH
+Avenches,VD,5451,CH
+Begnins,VD,5704,CH
+Bogis-Bossey,VD,5705,CH
+Bonvillars,VD,5551,CH
+Bougy-Villars,VD,5426,CH
+Bretonnières,VD,5748,CH
+Bursins,VD,5853,CH
+Bussigny,VD,5624,CH
+Bussy-sur-Moudon,VD,5663,CH
+Chamblon,VD,5904,CH
+Champvent,VD,5905,CH
+Chavannes-des-Bois,VD,5708,CH
+Chavannes-le-Veyron,VD,5475,CH
+Chavannes-près-Renens,VD,5627,CH
+Chavannes-sur-Moudon,VD,5665,CH
+Coinsins,VD,5710,CH
+Commugny,VD,5711,CH
+Concise,VD,5554,CH
+Coppet,VD,5712,CH
+Corcelles-près-Concise,VD,5555,CH
+Corcelles-près-Payerne,VD,5816,CH
+Cossonay,VD,5477,CH
+Crans (VD),VD,5713,CH
+Croy,VD,5752,CH
+Cuarnens,VD,5479,CH
+Curtilles,VD,5669,CH
+Denges,VD,5632,CH
+Echandens,VD,5633,CH
+Ecublens (VD),VD,5635,CH
+Epalinges,VD,5584,CH
+Essertines-sur-Rolle,VD,5856,CH
+Etoy,VD,5636,CH
+Eysins,VD,5716,CH
+Faoug,VD,5458,CH
+Founex,VD,5717,CH
+Féchy,VD,5427,CH
+Genolier,VD,5718,CH
+Gilly,VD,5857,CH
+Gland,VD,5721,CH
+Gollion,VD,5484,CH
+Grandson,VD,5561,CH
+Henniez,VD,5819,CH
+Jorat-Mézières,VD,5806,CH
+Juriens,VD,5754,CH
+L'Isle,VD,5486,CH
+La Chaux (Cossonay),VD,5474,CH
+La Praz,VD,5758,CH
+Lausanne,VD,5586,CH
+Lavigny,VD,5637,CH
+Le Mont-sur-Lausanne,VD,5587,CH
+Les Clées,VD,5750,CH
+Lignerolle,VD,5755,CH
+Lonay,VD,5638,CH
+Lucens,VD,5675,CH
+Luins,VD,5858,CH
+Lully (VD),VD,5639,CH
+Lussy-sur-Morges,VD,5640,CH
+Mathod,VD,5919,CH
+Mies,VD,5723,CH
+Mont-la-Ville,VD,5491,CH
+Mont-sur-Rolle,VD,5859,CH
+Montagny-près-Yverdon,VD,5922,CH
+Montcherand,VD,5756,CH
+Montpreveyres,VD,5792,CH
+Morges,VD,5642,CH
+Moudon,VD,5678,CH
+Nyon,VD,5724,CH
+Onnens (VD),VD,5565,CH
+Orbe,VD,5757,CH
+Payerne,VD,5822,CH
+Penthalaz,VD,5495,CH
+Penthaz,VD,5496,CH
+Perroy,VD,5860,CH
+Prangins,VD,5725,CH
+Prilly,VD,5589,CH
+Préverenges,VD,5643,CH
+Rances,VD,5760,CH
+Rolle,VD,5861,CH
+Romainmôtier-Envy,VD,5761,CH
+Ropraz,VD,5798,CH
+Saint-Livres,VD,5435,CH
+Saint-Prex,VD,5646,CH
+Saint-Sulpice (VD),VD,5648,CH
+Savigny,VD,5611,CH
+Suscévaz,VD,5930,CH
+Syens,VD,5688,CH
+Tannay,VD,5729,CH
+Tartegnin,VD,5862,CH
+Tolochenaz,VD,5649,CH
+Trey,VD,5827,CH
+Treycovagnes,VD,5931,CH
+Valbroye,VD,5831,CH
+Valeyres-sous-Rances,VD,5763,CH
+Vich,VD,5732,CH
+Villars-sous-Yens,VD,5652,CH
+Vinzel,VD,5863,CH
+Vucherens,VD,5692,CH
+Vufflens-la-Ville,VD,5503,CH
+Vulliens,VD,5803,CH
+Yverdon-les-Bains,VD,5938,CH
+Altikon,ZH,211,CH
+Bachenbülach,ZH,51,CH
+Bassersdorf,ZH,52,CH
+Berg am Irchel,ZH,23,CH
+Brütten,ZH,213,CH
+Bülach,ZH,53,CH
+Dachsen,ZH,25,CH
+Dietikon,ZH,243,CH
+Dietlikon,ZH,54,CH
+Dinhard,ZH,216,CH
+Dübendorf,ZH,191,CH
+Eglisau,ZH,55,CH
+Elgg,ZH,294,CH
+Elsau,ZH,219,CH
+Embrach,ZH,56,CH
+Feuerthalen,ZH,27,CH
+Flaach,ZH,28,CH
+Flurlingen,ZH,29,CH
+Geroldswil,ZH,244,CH
+Glattfelden,ZH,58,CH
+Hochfelden,ZH,59,CH
+Kloten,ZH,62,CH
+Laufen-Uhwiesen,ZH,34,CH
+Lufingen,ZH,63,CH
+Marthalen,ZH,35,CH
+Nürensdorf,ZH,64,CH
+Oberengstringen,ZH,245,CH
+Oetwil an der Limmat,ZH,246,CH
+Opfikon,ZH,66,CH
+Rheinau,ZH,38,CH
+Rickenbach (ZH),ZH,225,CH
+Schlieren,ZH,247,CH
+Stammheim,ZH,292,CH
+Unterengstringen,ZH,249,CH
+Wallisellen,ZH,69,CH
+Weiningen (ZH),ZH,251,CH
+Winkel,ZH,72,CH
+Winterthur,ZH,230,CH
+Zürich,ZH,261,CH
+Büsingen am Hochrhein,,7101,DE
