@@ -28,21 +28,22 @@ Vous devriez maintenant voir tous les tracés du chemin sur la carte !
 
 ### Étape 3 : Télécharger les limites communales suisses
 
-**Option A : Via QGIS directement (RECOMMANDÉ)**
-1. Menu **Couche** → **Ajouter une couche** → **Ajouter une couche WFS**
-2. Cliquez sur **Nouveau**
-3. Nom : `geo.admin.ch`
-4. URL : `https://data.geo.admin.ch/ch.swisstopo.swissboundaries3d-gemeinde-flaeche.fill/`
-5. Cliquez sur **OK**, puis **Connexion**
-6. Sélectionnez la couche des communes
-7. Cliquez sur **Ajouter**
+**TÉLÉCHARGEMENT MANUEL (RECOMMANDÉ)**
 
-**Option B : Téléchargement manuel**
 1. Allez sur : https://www.swisstopo.admin.ch/fr/geodata/landscape/boundaries3d.html
-2. Téléchargez "swissBOUNDARIES3D Communes"
-3. Décompressez le fichier
-4. Dans QGIS : **Couche** → **Ajouter une couche** → **Ajouter une couche vecteur**
-5. Sélectionnez le fichier `.shp` des communes
+2. Cliquez sur le bouton **"Télécharger"** ou descendez jusqu'à la section téléchargements
+3. **IMPORTANT** : Téléchargez le fichier **`swissboundaries3d_YYYY-MM_2056_5728.gpkg.zip`**
+   - Format : **GeoPackage (.gpkg.zip)** - PAS le .gdb.zip !
+   - Le GeoPackage fonctionne mieux avec QGIS
+   - La date (YYYY-MM) correspond à la version la plus récente
+4. **Décompressez** le fichier zip téléchargé
+5. Dans le dossier décompressé, cherchez le dossier **`SWISSBOUNDARIES3D_YYYY_2056_5728.gpkg`** qui contient les différentes couches
+6. Dans QGIS : Menu **Couche** → **Ajouter une couche** → **Ajouter une couche vecteur**
+7. Cliquez sur les **trois points** et naviguez vers le fichier `.gpkg` décompressé
+8. QGIS vous demandera quelle couche ouvrir - sélectionnez : **`tlm_hoheitsgebiet_gemeinde`** (= communes)
+9. Cliquez sur **Ajouter**
+
+Vous devriez maintenant voir toutes les communes suisses colorées sur la carte !
 
 ### Étape 4 : Fusionner tous vos tracés GPX en une seule couche
 
